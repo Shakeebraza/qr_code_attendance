@@ -40,7 +40,7 @@ try {
     alert('Registration successful!');
     window.location.href = '../login.php'; // Redirect to login page
     </script>";
-    exit(); // Ensure no further code is executed
+    exit(); 
 } catch(PDOException $e) {
     echo "<script>
     alert('Error: " . addslashes($e->getMessage()) . "');

@@ -18,9 +18,20 @@ $chkIsAdmin = $funObject->isAdmin();
             <li class="nav-item active">
                 <a class="nav-link" href="./welcome.php">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
+            <?php
+            if($chkIsAdmin == 1 || $chkIsAdmin == 2){
+                echo'  <li class="nav-item">
                 <a class="nav-link" href="./masterlist.php">List of Employees</a>
+            </li>';
+            }else{
+                echo '
+                  <li class="nav-item">
+                <a class="nav-link" href="./empmasterlist.php">Employee</a>
             </li>
+                ';
+            }
+            ?>
+          
             <?php
             if($chkIsAdmin == 1 || $chkIsAdmin == 2){
             ?>
