@@ -87,6 +87,45 @@ class Fun {
         }
         return $_SESSION['csrf_token'];
     }
+    public function GetAttendance() {
+        try {
+            $getatt = $this->conn->prepare("SELECT * FROM tbl_attendance WHERE DATE(time_in) = :today");
+            $today = date("Y-m-d");
+            $getatt->bindParam(":today", $today);
+            $getatt->execute();
+            $attendanceRecords = $getatt->fetchAll(PDO::FETCH_ASSOC);
+            $recordCount = $getatt->rowCount();
+            return [
+                'count' => $recordCount,
+                'records' => $attendanceRecords
+            ];
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return [
+                'count' => 0,
+                'records' => []
+            ];
+        }
+    }
+    public function GetAllUser() {
+        try {
+            $getatt = $this->conn->prepare("SELECT * FROM users");
+            $getatt->execute();
+            $attendanceRecords = $getatt->fetchAll(PDO::FETCH_ASSOC);
+            $recordCount = $getatt->rowCount();
+            return [
+                'count' => $recordCount,
+                'records' => $attendanceRecords
+            ];
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return [
+                'count' => 0,
+                'records' => []
+            ];
+        }
+    }
+    
     
 }
 
