@@ -159,64 +159,72 @@ table.dataTable thead > tr > td.sorting_desc_disabled {
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Course & Section</th>
+                                <th scope="col">username</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
-                                include('./conn/conn.php');
+                        <?php 
+                            include('./conn/conn.php');
 
-                                $stmt = $conn->prepare("SELECT * FROM tbl_student");
-                                $stmt->execute();
+                            // Fetch students data from the database
+                            $stmt = $conn->prepare("SELECT * FROM tbl_student 
+                                                    JOIN users ON users.id = tbl_student.user_id 
+                                                    WHERE users.verified = 1");
+                            $stmt->execute();
+                            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            // Loop through each student
+                            foreach ($result as $row) {
+                                $studentID = htmlspecialchars($row["tbl_student_id"], ENT_QUOTES, 'UTF-8');
+                                $studentName = htmlspecialchars($row["student_name"], ENT_QUOTES, 'UTF-8');
+                                $studentCourse = htmlspecialchars($row["student_name"], ENT_QUOTES, 'UTF-8');
+                                $qrCode = htmlspecialchars($row["generated_code"], ENT_QUOTES, 'UTF-8');
+                        ?>
+                            <tr>
+                                <th scope="row" id="studentID-<?= $studentID ?>"><?= $studentID ?></th>
+                                <td id="studentName-<?= $studentID ?>"><?= $studentName ?></td>
+                                <td id="studentCourse-<?= $studentID ?>"><?= $studentCourse ?></td>
+                                <td>
+                                    <div class="action-button">
+                                        <!-- QR Code Modal Trigger -->
+                                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#qrCodeModal<?= $studentID ?>">
+                                            <img src="https://cdn-icons-png.flaticon.com/512/1341/1341632.png" alt="QR Code Icon" width="16">
+                                        </button>
 
-                                foreach ($result as $row) {
-                                    $studentID = htmlspecialchars($row["tbl_student_id"], ENT_QUOTES, 'UTF-8');
-                                    $studentName = htmlspecialchars($row["student_name"], ENT_QUOTES, 'UTF-8');
-                                    $studentCourse = htmlspecialchars($row["course_section"], ENT_QUOTES, 'UTF-8');
-                                    $qrCode = htmlspecialchars($row["generated_code"], ENT_QUOTES, 'UTF-8');
-                                ?>
-
-                                <tr>
-                                    <th scope="row" id="studentID-<?= $studentID ?>"><?= $studentID ?></th>
-                                    <td id="studentName-<?= $studentID ?>"><?= $studentName ?></td>
-                                    <td id="studentCourse-<?= $studentID ?>"><?= $studentCourse ?></td>
-                                    <td>
-                                        <div class="action-button">
-                                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#qrCodeModal<?= $studentID ?>"><img src="https://cdn-icons-png.flaticon.com/512/1341/1341632.png" alt="" width="16"></button>
-
-                                            <!-- QR Modal -->
-                                            <div class="modal fade" id="qrCodeModal<?= $studentID ?>" tabindex="-1" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title"><?= $studentName ?>'s QR Code</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body text-center">
-                                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCode) ?>" alt="" width="300">
-                                                        </div>
-                                                        <div class="modal-footer">
+                                        <!-- QR Code Modal -->
+                                        <div class="modal fade" id="qrCodeModal<?= $studentID ?>" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"><?= $studentName ?>'s QR Code</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body text-center">
+                                                        <!-- QR Code Image -->
+                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCode) ?>" alt="QR Code for <?= $studentName ?>" width="300">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <!-- Download QR Code Button -->
                                                         <a href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCode) ?>" class="btn btn-secondary" download="qrcode.png">Download QR Code</a>
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                        </div>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <button class="btn btn-secondary btn-sm" onclick="updateStudent(<?= $studentID ?>)">&#128393;</button>
-                                            <button class="btn btn-danger btn-sm" onclick="deleteStudent(<?= $studentID ?>)">&#10006;</button>
                                         </div>
-                                    </td>
-                                </tr>
 
-                                <?php
-                                }
-                            ?>
+                                        <!-- Update and Delete Buttons -->
+                                        <!-- <button class="btn btn-secondary btn-sm" onclick="updateStudent(<?= $studentID ?>)">&#128393;</button> -->
+                                        <!-- <button class="btn btn-danger btn-sm" onclick="deleteStudent(<?= $studentID ?>)">&#10006;</button> -->
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php
+                            }
+                        ?>
+
                         </tbody>
                     </table>
                 </div>

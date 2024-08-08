@@ -2,7 +2,7 @@
 include_once('header.php');
 $data=$funObject->GetAttendance();
 $users=$funObject->GetAllUser();
-
+$usersdata=$funObject->GetUserAttendance(date('y-m-d'));
 ?>
 
 
@@ -47,43 +47,34 @@ $users=$funObject->GetAllUser();
 
             <!-- Recent Sales Start -->
             <div class="container-fluid pt-4 px-4">
-               <div class="col-sm-12 col-xl-12">
+            <div class="col-sm-12 col-xl-12">
                         <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Testimonial</h6>
-                            <div class="owl-carousel testimonial-carousel owl-loaded owl-drag">
+                            <h6 class="mb-4">Present Employe</h6>
+                            <div class="owl-carousel testimonial-carousel">
+                            <?php
+                            if(isset($usersdata['records'])){
+                                foreach($usersdata['records'] as $val){
+                                    if(!empty($val["profile"])){
+                                        $imgurl=$urlval.$val["profile"];
+                                        
+                                    }else{
+                                        $imgurl=$urlval."admin/img/user.jpg";
+
+                                    }
+                                    echo '
+                                <div class="testimonial-item text-center">
+                                    <img class="img-fluid rounded-circle mx-auto mb-4" src="'.$imgurl.'" style="width: 100px; height: 100px;">
+                                    <h5 class="mb-1">'.$val["username"].'</h5>
+                                    <p>User</p>
+                                </div>
                                 
+                                ';
                                 
-                            <div class="owl-stage-outer"><div class="owl-stage" style="transform: translate3d(-2227px, 0px, 0px); transition: 1s; width: 4455px;"><div class="owl-item cloned" style="width: 742.5px;"><div class="testimonial-item text-center">
-                                    <img class="img-fluid rounded-circle mx-auto mb-4" src="img/testimonial-1.jpg" style="width: 100px; height: 100px;">
-                                    <h5 class="mb-1">Client Name</h5>
-                                    <p>Profession</p>
-                                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                                </div></div><div class="owl-item cloned" style="width: 742.5px;"><div class="testimonial-item text-center">
-                                    <img class="img-fluid rounded-circle mx-auto mb-4" src="img/testimonial-2.jpg" style="width: 100px; height: 100px;">
-                                    <h5 class="mb-1">Client Name</h5>
-                                    <p>Profession</p>
-                                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                                </div></div><div class="owl-item" style="width: 742.5px;"><div class="testimonial-item text-center">
-                                    <img class="img-fluid rounded-circle mx-auto mb-4" src="img/testimonial-1.jpg" style="width: 100px; height: 100px;">
-                                    <h5 class="mb-1">Client Name</h5>
-                                    <p>Profession</p>
-                                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                                </div></div><div class="owl-item active" style="width: 742.5px;"><div class="testimonial-item text-center">
-                                    <img class="img-fluid rounded-circle mx-auto mb-4" src="img/testimonial-2.jpg" style="width: 100px; height: 100px;">
-                                    <h5 class="mb-1">Client Name</h5>
-                                    <p>Profession</p>
-                                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                                </div></div><div class="owl-item cloned" style="width: 742.5px;"><div class="testimonial-item text-center">
-                                    <img class="img-fluid rounded-circle mx-auto mb-4" src="img/testimonial-1.jpg" style="width: 100px; height: 100px;">
-                                    <h5 class="mb-1">Client Name</h5>
-                                    <p>Profession</p>
-                                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                                </div></div><div class="owl-item cloned" style="width: 742.5px;"><div class="testimonial-item text-center">
-                                    <img class="img-fluid rounded-circle mx-auto mb-4" src="img/testimonial-2.jpg" style="width: 100px; height: 100px;">
-                                    <h5 class="mb-1">Client Name</h5>
-                                    <p>Profession</p>
-                                    <p class="mb-0">Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                                </div></div></div></div><div class="owl-nav disabled"><div class="owl-prev">prev</div><div class="owl-next">next</div></div><div class="owl-dots"><div class="owl-dot"><span></span></div><div class="owl-dot active"><span></span></div></div></div>
+                            }
+                        }
+                        ?>
+                        </div>  
+
                         </div>
                     </div>
             </div>

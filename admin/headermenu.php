@@ -15,6 +15,7 @@
                             <span class="d-none d-lg-inline-flex"><?php echo $_SESSION['username']?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <a href="<?php echo $urlval?>welcome.php" class="dropdown-item">Go Website</a>
                             <a href="<?php echo $urlval?>profile.php" class="dropdown-item">My Profile</a>
                             <a href="<?php echo $urlval?>setting.php" class="dropdown-item">Settings</a>
                             <a href="<?php echo $urlval?>auth/logout.php" class="dropdown-item">Log Out</a>

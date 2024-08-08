@@ -68,6 +68,11 @@ $chksAdmin = $funObject->isAdmin();
         .btn-camera {
             margin-top: 10px;
         }
+
+       
+
+
+
     </style>
 </head>
 <body>
@@ -94,59 +99,67 @@ include_once('menu.php');
 
             <div class="attendance-list">
                 <h4>List of Today Present Employe</h4>
-                <div class="table-container table-responsive">
-                    <table class="table text-center table-sm" id="attendanceTable">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Course & Section</th>
-                                <th scope="col">Time In</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <?php
 
-                                                <?php 
-                        include('./conn/conn.php');
+                    $currentDate = date('Y-m-d');
 
-                        // Get current date in YYYY-MM-DD format
-                        $currentDate = date('Y-m-d');
-
-                        // Update the query to filter by today's date
-                        $stmt = $conn->prepare("SELECT * FROM tbl_attendance 
-                                                LEFT JOIN tbl_student ON tbl_student.tbl_student_id = tbl_attendance.tbl_student_id 
+                    try {
+                        // Prepare the SQL query
+                        $stmt = $conn->prepare("SELECT 
+                                                    tbl_attendance.tbl_attendance_id,
+                                                    users.username AS user_name,
+                                                    users.email AS user_email,
+                                                    users.profile AS user_profile,
+                                                    DATE(tbl_attendance.time_in) AS attendance_date,
+                                                    TIME(tbl_attendance.time_in) AS time_in
+                                                FROM tbl_attendance 
+                                                LEFT JOIN users 
+                                                ON users.id = tbl_attendance.tbl_user_id 
                                                 WHERE DATE(tbl_attendance.time_in) = :currentDate");
                         $stmt->bindParam(':currentDate', $currentDate);
                         $stmt->execute();
-                        $result = $stmt->fetchAll();
+                        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } catch (PDOException $e) {
+                        error_log("Database error: " . $e->getMessage());
+                        echo "An error occurred while processing your request.";
+                    }
+                    ?>
 
-                        foreach ($result as $row) {
-                            $attendanceID = $row["tbl_attendance_id"];
-                            $studentName = $row["student_name"];
-                            $studentCourse = $row["course_section"];
-                            $timeIn = $row["time_in"];
-                        ?>
+                    <div class="table-container table-responsive">
+                        <table class="table text-center table-sm" id="attendanceTable">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Profile</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($result as $row) { ?>
+                                        <tr>
+                                            <th scope="row"><?= htmlspecialchars($row['tbl_attendance_id']) ?></th>
+                                            <td><?= htmlspecialchars($row['user_name']) ?></td>
+                                            <td><?= htmlspecialchars($row['user_email']) ?></td>
+                                            <td>
+                                                <?php if (!empty($row['user_profile'])): ?>
+                                                    <img src="<?= htmlspecialchars($row['user_profile']) ?>" alt="Profile Picture" class="img-thumbnail rounded-circle" style="max-width: 100px; max-height: 62px;">
+                                                <?php else: ?>
+                                                    <img src="<?= htmlspecialchars($urlval) ?>admin/img/user.jpg" alt="Profile Picture" class="img-thumbnail rounded-circle" style="max-width: 100px; max-height: 62px;">
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?= htmlspecialchars($row['attendance_date']) ?></td>
+                                            <td><?= htmlspecialchars($row['time_in']) ?></td>
+                                        </tr>
+                                    <?php } ?>
 
-                        <tr>
-                            <th scope="row"><?= htmlspecialchars($attendanceID) ?></th>
-                            <td><?= htmlspecialchars($studentName) ?></td>
-                            <td><?= htmlspecialchars($studentCourse) ?></td>
-                            <td><?= htmlspecialchars($timeIn) ?></td>
-                            <td>
-                                <div class="action-button">
-                                    <button class="btn btn-danger delete-button" onclick="deleteAttendance(<?= htmlspecialchars($attendanceID) ?>)">X</button>
-                                </div>
-                            </td>
-                        </tr>
 
-                        <?php
-                        }
-                        ?>
+                            </tbody>
+                        </table>
+                    </div>
 
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>

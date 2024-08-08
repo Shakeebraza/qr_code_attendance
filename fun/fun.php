@@ -169,6 +169,79 @@ class Fun {
             ];
         }
     }
+    public function GetUserAttendance($date = NULL, $name = NULL, $email = NULL, $time = NULL) {
+        try {
+            $query = "SELECT 
+                          users.id,
+                          users.username,
+                          users.email,
+                          users.profile,
+                          attendance.time_in
+                      FROM 
+                          users
+                      JOIN 
+                          tbl_attendance attendance ON users.id = attendance.tbl_user_id;";
+
+
+            
+            $conditions = [];
+            $params = [];
+    
+            if (!empty($date)) {
+                $conditions[] = "DATE(attendance.time_in) = :date";
+                $params[':date'] = $date;
+            }
+            if (!empty($name)) {
+                $conditions[] = "users.username LIKE :name";
+                $params[':name'] = "%$name%";
+            }
+            if (!empty($email)) {
+                $conditions[] = "users.email LIKE :email";
+                $params[':email'] = "%$email%";
+            }
+            if (!empty($time)) {
+                $conditions[] = "TIME(attendance.time_in) = :time";
+                $params[':time'] = $time;
+            }
+    
+            if (count($conditions) > 0) {
+                $query .= " WHERE " . implode(' AND ', $conditions);
+            }
+    
+            // Debugging: Output the query and parameters
+            error_log("SQL Query: " . $query);
+            error_log("Parameters: " . print_r($params, true));
+    
+            $stmt = $this->conn->prepare($query);
+    
+            // Bind parameters
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+    
+            $stmt->execute();
+            $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            // Debugging: Output the result
+            error_log("Query Result: " . print_r($userRecords, true));
+    
+            return [
+                'count' => count($userRecords),
+                'records' => $userRecords
+            ];
+        } catch (PDOException $e) {
+            // Log the error message
+            error_log("Error: " . $e->getMessage());
+    
+            return [
+                'count' => 0,
+                'records' => []
+            ];
+        }
+    }
+    
+    
+
     
     
     
