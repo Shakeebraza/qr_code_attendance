@@ -47,6 +47,8 @@ if ($res == 0 || $chksAdmin == 0) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+    
     
 </head>
 

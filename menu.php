@@ -8,7 +8,7 @@ if ($res == 0) {
 $chkIsAdmin = $funObject->isAdmin();
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand ml-4" href="#">QR Code Attendance System</a>
+    <a class="navbar-brand ml-4" href="#">Norajokaraoke QR Code Attendance System</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -36,7 +36,7 @@ $chkIsAdmin = $funObject->isAdmin();
             if($chkIsAdmin == 1 || $chkIsAdmin == 2){
             ?>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo $urlval?>admin/index.html">Go to Admin Panel</a>
+                <a class="nav-link" href="<?php echo $urlval?>admin/index.php">Go to Admin Panel</a>
             </li>
             <?php
             }

@@ -125,6 +125,51 @@ class Fun {
             ];
         }
     }
+
+    public function FindUser($id) {
+        try {
+            $getatt = $this->conn->prepare("SELECT * FROM users WHERE id = :id");
+            $getatt->bindParam(":id", $id, PDO::PARAM_INT);
+            $getatt->execute();
+            $userRecords = $getatt->fetchAll(PDO::FETCH_ASSOC);
+    
+            return [
+                'count' => count($userRecords),
+                'records' => $userRecords
+            ];
+        } catch (PDOException $e) {
+            // Log the error message
+            error_log("Error: " . $e->getMessage());
+            
+            return [
+                'count' => 0,
+                'records' => []
+            ];
+        }
+    }
+
+    public function GetUserFiles($id) {
+        try {
+            $getatt = $this->conn->prepare("SELECT filename, file_path, input_type FROM files WHERE user_id = :id");
+            $getatt->bindParam(":id", $id, PDO::PARAM_INT);
+            $getatt->execute();
+            $userRecords = $getatt->fetchAll(PDO::FETCH_ASSOC);
+    
+            return [
+                'count' => count($userRecords),
+                'records' => $userRecords
+            ];
+        } catch (PDOException $e) {
+            // Log the error message
+            error_log("Error: " . $e->getMessage());
+            
+            return [
+                'count' => 0,
+                'records' => []
+            ];
+        }
+    }
+    
     
     
 }

@@ -39,15 +39,18 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir) {
 
     // Add action buttons to each row
     foreach ($data as &$row) {
-        $row['action'] = '<button class="btn btn-primary btn-sm edit-btn" data-id="' . $row['id'] . '">Edit</button> ' .
-                         '<button class="btn btn-danger btn-sm delete-btn" data-id="' . $row['id'] . '">Delete</button>';
-if(!empty($row['profile'] )){
-    
-    $row['profile'] = "<img class='tableimage' src='" .$urlval. $row['profile'] . "' alt='Profile Image' style='width: 50px; height: 50px;' />";
-}else{
-    $row['profile'] = "<img class='tableimage' src='".$urlval."admin/img/user.jpg' alt='Profile Image' style='width: 50px; height: 50px;' />";
-    
-}
+        $row['action'] = '
+            <a href="'.$urlval.'admin/viewuser.php?userid=' . base64_encode(base64_encode($row['id'])) . '" class="btn btn-outline-info m-2" data-id="' . $row['id'] . '">View</a>
+            <a href="'.$urlval.'admin/edituser.php?userid=' . base64_encode(base64_encode($row['id'])). '" class="btn btn-outline-success m-2" data-id="' . $row['id'] . '">Edit</a>
+            <button type="button" class="btn btn-outline-primary m-2" data-id="' . $row['id'] . '">Delete</button>';
+
+        if(!empty($row['profile'] )){
+            
+            $row['profile'] = "<img class='tableimage' src='" .$urlval. $row['profile'] . "' alt='Profile Image' style='width: 50px; height: 50px;' />";
+        }else{
+            $row['profile'] = "<img class='tableimage' src='".$urlval."admin/img/user.jpg' alt='Profile Image' style='width: 50px; height: 50px;' />";
+            
+        }
 
         // Display status text
         $row['verified'] = $row['verified'] == 0 ? "Unverified" : "Verified";
