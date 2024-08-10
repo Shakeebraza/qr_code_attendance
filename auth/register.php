@@ -10,19 +10,11 @@ $password = htmlspecialchars(trim($_POST['password']));
 if (empty($username) || empty($email) || empty($password)) {
     echo "<script>
     alert('Please fill in all fields.');
-    window.location.href = '../register.php'; // Redirect to registration page
+    window.location.href = '../singup.php'; // Redirect to registration page
     </script>";
     exit();
 }
 
-// Validate email format
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo "<script>
-    alert('Invalid email format.');
-    window.location.href = '../register.php'; // Redirect to registration page
-    </script>";
-    exit();
-}
 
 // Hash the password
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -44,7 +36,7 @@ try {
 } catch(PDOException $e) {
     echo "<script>
     alert('Error: " . addslashes($e->getMessage()) . "');
-    window.location.href = '../register.php'; // Redirect to registration page
+    window.location.href = '../singup.php'; // Redirect to registration page
     </script>";
     exit(); // Ensure no further code is executed
 }

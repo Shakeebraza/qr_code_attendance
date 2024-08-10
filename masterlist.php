@@ -21,7 +21,7 @@ if ($admincheck == 0) {
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
     <!-- Data Table -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
 
@@ -243,14 +243,14 @@ table.dataTable thead > tr > td.sorting_desc_disabled {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="./endpoint/add-student.php" method="POST">
+                    <form action="./endpoint/add-student.php" method="POST" onsubmit="return validateForm()">
                         <div class="form-group">
                             <label for="username">Username</label>
                             <input type="text" class="form-control" id="username" name="username" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="email">Number</label>
+                            <input type="number" class="form-control" id="email" name="email" required>
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
@@ -273,36 +273,7 @@ table.dataTable thead > tr > td.sorting_desc_disabled {
         </div>
     </div>
 
-    <!-- Update Modal -->
-    <div class="modal fade" id="updateStudentModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="updateStudent" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateStudent">Update Employee</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="./endpoint/update-student.php" method="POST">
-                        <input type="hidden" class="form-control" id="updateStudentId" name="tbl_student_id">
-                        <div class="form-group">
-                            <label for="updateStudentName">Full Name</label>
-                            <input type="text" class="form-control" id="updateStudentName" name="student_name">
-                        </div>
-                        <div class="form-group">
-                            <label for="updateStudentCourse">Course and Section</label>
-                            <input type="text" class="form-control" id="updateStudentCourse" name="course_section">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-dark">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <?php include('script.php'); ?>
 
@@ -359,6 +330,15 @@ table.dataTable thead > tr > td.sorting_desc_disabled {
                 document.querySelector('.qr-generator').style.display = 'none';
             }
         }
+        function validateForm() {
+        var numberField = document.getElementById('email').value;
+        if (numberField.length < 10) {
+            alert('The number must be at least 10 digits long.');
+            return false; 
+        }
+
+        return true;
+    }
     </script>
     
 </body>

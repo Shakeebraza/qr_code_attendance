@@ -70,13 +70,10 @@ $(document).ready(function() {
         ]
     });
 
-    // Handle form submission to trigger DataTable redraw
     $('form').on('submit', function(e) {
         e.preventDefault();
         table.draw();
     });
-
-    // Handle edit button click
     $('#users-table').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
         alert('Edit button clicked for ID: ' + id);
@@ -84,9 +81,24 @@ $(document).ready(function() {
 
     $('#users-table').on('click', '.delete-btn', function() {
         var id = $(this).data('id');
-        // Implement the delete functionality here
+
         if (confirm('Are you sure you want to delete this user?')) {
-            alert('Delete button clicked for ID: ' + id);
+            $.ajax({
+                url: '<?php echo $urlval; ?>ajax/delete_user.php',
+                type: 'POST',
+                data: { id: id },
+                success: function(response) {
+                    if (response === 'success') {
+                        alert('User deleted successfully.');
+                        table.draw(); 
+                    } else {
+                        alert('Failed to delete user. Please try again.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
         }
     });
 });

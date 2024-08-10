@@ -42,7 +42,7 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir) {
         $row['action'] = '
             <a href="'.$urlval.'admin/viewuser.php?userid=' . base64_encode(base64_encode($row['id'])) . '" class="btn btn-outline-info m-2" data-id="' . $row['id'] . '">View</a>
             <a href="'.$urlval.'admin/edituser.php?userid=' . base64_encode(base64_encode($row['id'])). '" class="btn btn-outline-success m-2" data-id="' . $row['id'] . '">Edit</a>
-            <button type="button" class="btn btn-outline-primary m-2" data-id="' . $row['id'] . '">Delete</button>';
+            <button type="button" class="btn btn-outline-primary m-2 delete-btn" data-id="' . $row['id'] . '">Delete</button>';
 
         if(!empty($row['profile'] )){
             

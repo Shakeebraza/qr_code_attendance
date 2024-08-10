@@ -16,7 +16,7 @@ if($res == 0){
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
     <!-- Data Table -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
 
@@ -83,8 +83,9 @@ include_once('menu.php');
             <div class="student-list">
                 <div class="title">
                     <h4>Employee</h4>
-               
+                    <button class="btn btn-dark" data-toggle="modal" data-target="#addStudentModal">Genrate QR Code</button>
                 </div>
+                
                 <hr>
                 <div class="table-container table-responsive">
                     <table class="table text-center table-sm" id="studentTable">
@@ -92,8 +93,9 @@ include_once('menu.php');
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Course & Section</th>
-                                <th scope="col">Action</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">QR Code</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,48 +122,53 @@ include_once('menu.php');
                                     foreach ($result as $row) {
                                         $studentID = $row["tbl_student_id"];
                                         $studentName = $row["student_name"];
-                                        $studentCourse = $row["course_section"];
+                                        $datetime = new DateTime($row["date"]);
+                                        $date = $datetime->format('Y-m-d');
+                                        $time = $datetime->format('H:i:s');
                                         $qrCode = $row["generated_code"];
                                     ?>
 
-                                    <tr>
-                                        <th scope="row" id="studentID-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
-                                            <?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>
-                                        </th>
-                                        <td id="studentName-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
-                                            <?= htmlspecialchars($studentName, ENT_QUOTES, 'UTF-8') ?>
-                                        </td>
-                                        <td id="studentCourse-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
-                                            <?= htmlspecialchars($studentCourse, ENT_QUOTES, 'UTF-8') ?>
-                                        </td>
-                                        <td>
-                                            <div class="action-button">
-                                                <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#qrCodeModal<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
-                                                    <img src="https://cdn-icons-png.flaticon.com/512/1341/1341632.png" alt="" width="16">
-                                                </button>
+                                            <tr>
+                                                <th scope="row" id="studentID-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
+                                                    <?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>
+                                                </th>
+                                                <td id="studentName-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
+                                                    <?= htmlspecialchars($studentName, ENT_QUOTES, 'UTF-8') ?>
+                                                </td>
+                                                <td id="studentDate-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
+                                                    <?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8') ?>
+                                                </td>
+                                                <td id="studentTime-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
+                                                    <?= htmlspecialchars($time, ENT_QUOTES, 'UTF-8') ?>
+                                                </td>
+                                                <td>
+                                                    <div class="action-button">
+                                                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#qrCodeModal<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
+                                                            <img src="https://cdn-icons-png.flaticon.com/512/1341/1341632.png" alt="" width="16">
+                                                        </button>
 
-                                                <!-- QR Modal -->
-                                                <div class="modal fade" id="qrCodeModal<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title"><?= htmlspecialchars($studentName, ENT_QUOTES, 'UTF-8') ?>'s QR Code</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body text-center">
-                                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCode) ?>" alt="" width="300">
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <!-- QR Modal -->
+                                                        <div class="modal fade" id="qrCodeModal<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>" tabindex="-1" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title"><?= htmlspecialchars($studentName, ENT_QUOTES, 'UTF-8') ?>'s QR Code</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body text-center">
+                                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCode) ?>" alt="" width="300">
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                                </td>
+                                            </tr>
 
                                     <?php
                                     }
@@ -175,6 +182,48 @@ include_once('menu.php');
 
     </div>
 
+    <!-- Add Modal -->
+    <div class="modal fade" id="addStudentModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="addStudent" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStudent">Today QR Code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="./endpoint/qrgenrate.php" method="POST">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="<?php echo $_SESSION['username']?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="work">Work</option>
+                            <option value="no_work">No Work</option>
+                            <option value="outside_work">Outside Work</option>
+                        </select>
+                    </div>
+
+                        <button type="button" class="btn btn-secondary form-control qr-generator" onclick="generateQrCode()">Generate QR Code</button>
+
+                        <div class="qr-con text-center" style="display: none;">
+                            <input type="hidden" class="form-control" id="generatedCode" name="generated_code">
+                            <p>Take a pic with your QR code.</p>
+                            <img class="mb-4" src="" id="qrImg" alt="">
+                        </div>
+                        <div class="modal-footer modal-close" style="display: none;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <?php
 include('script.php');
@@ -219,25 +268,27 @@ include('script.php');
         }
 
         function generateQrCode() {
-            const qrImg = document.getElementById('qrImg');
+    const qrImg = document.getElementById('qrImg');
 
-            let text = generateRandomCode(10);
-            $("#generatedCode").val(text);
+    let text = generateRandomCode(10);
+    $("#generatedCode").val(text);
 
-            if (text === "") {
-                alert("Please enter text to generate a QR code.");
-                return;
-            } else {
-                const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(text)}`;
+    if (text === "") {
+        alert("Please enter text to generate a QR code.");
+        return;
+    } else {
+        const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(text)}`;
 
-                qrImg.src = apiUrl;
-                document.getElementById('studentName').style.pointerEvents = 'none';
-                document.getElementById('studentCourse').style.pointerEvents = 'none';
-                document.querySelector('.modal-close').style.display = '';
-                document.querySelector('.qr-con').style.display = '';
-                document.querySelector('.qr-generator').style.display = 'none';
-            }
-        }
+        qrImg.src = apiUrl;
+
+        // Ensure QR image and modal elements are displayed correctly
+        qrImg.onload = function() {
+            document.querySelector('.modal-close').style.display = 'flex';
+            document.querySelector('.qr-con').style.display = 'block';
+            document.querySelector('.qr-generator').style.display = 'none';
+        };
+    }
+}
     </script>
     
 </body>

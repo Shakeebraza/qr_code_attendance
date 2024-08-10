@@ -75,13 +75,29 @@ if ($res == 1) {
 </head>
 <body>
     <div class="form-container">
-        <h2>Login</h2>
-        <form action="auth/login.php" method="post">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-            <a href="<?php echo $urlval?>singup.php">Signup</a>
-        </form>
+    <h2>Login</h2>
+<form action="auth/login.php" method="post" onsubmit="return validateLoginForm()">
+    <input type="number" name="email" id="loginNumber" placeholder="Number" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+    <a href="<?php echo $urlval?>singup.php">Signup</a>
+    <div id="login-error-message" style="color: red; display: none;">Please enter at least 10 digits.</div>
+</form>
     </div>
+
+    <script>
+    function validateLoginForm() {
+        const numberInput = document.getElementById('loginNumber').value;
+        const errorMessage = document.getElementById('login-error-message');
+        
+        if (numberInput.length < 10) {
+            errorMessage.style.display = 'block';
+            return false; // Prevent form submission
+        } else {
+            errorMessage.style.display = 'none';
+            return true; // Allow form submission
+        }
+    }
+</script>
 </body>
 </html>

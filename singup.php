@@ -79,13 +79,29 @@ $chkIsAdmin = $funObject->isAdmin();
 <body>
     <div class="form-container">
         <h2>Register</h2>
-        <form action="auth/register.php" method="post">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <a href="<?php echo $urlval?>login.php">Already have an account? Login</a>
-            <button type="submit">Register</button>
-        </form>
+        <form action="auth/register.php" method="post" onsubmit="return validateForm()">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="number" name="email" id="number" placeholder="Number" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <a href="<?php echo $urlval?>login.php">Already have an account? Login</a>
+    <button type="submit">Register</button>
+    <div id="error-message" style="color: red; display: none;">Please enter at least 10 digits.</div>
+</form>
     </div>
+
+    <script>
+    function validateForm() {
+        const numberInput = document.getElementById('number').value;
+        const errorMessage = document.getElementById('error-message');
+        
+        if (numberInput.length < 10) {
+            errorMessage.style.display = 'block';
+            return false; // Prevent form submission
+        } else {
+            errorMessage.style.display = 'none';
+            return true; // Allow form submission
+        }
+    }
+</script>
 </body>
 </html>

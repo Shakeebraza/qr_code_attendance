@@ -19,19 +19,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($result !== false) {
                 $studentID = $result["tbl_student_id"];
                 $userID = $result["user_id"];
-                $timeIn = date("Y-m-d H:i:s");
+                $currentDate = date("Y-m-d");
 
-                // Prepare and execute query to insert attendance record
-                $insertStmt = $conn->prepare("INSERT INTO tbl_attendance (tbl_student_id, tbl_user_id, time_in) VALUES (:tbl_student_id, :user_id, :time_in)");
-                $insertStmt->bindParam(":tbl_student_id", $studentID, PDO::PARAM_STR);
-                $insertStmt->bindParam(":user_id", $userID, PDO::PARAM_STR);
-                $insertStmt->bindParam(":time_in", $timeIn, PDO::PARAM_STR);
+                // Check if the QR code has already been used today
+                $checkStmt = $conn->prepare("SELECT * FROM tbl_attendance WHERE tbl_student_id = :tbl_student_id AND DATE(time_in) = :current_date");
+                $checkStmt->bindParam(":tbl_student_id", $studentID, PDO::PARAM_STR);
+                $checkStmt->bindParam(":current_date", $currentDate, PDO::PARAM_STR);
+                $checkStmt->execute();
 
-                $insertStmt->execute();
+                if ($checkStmt->rowCount() > 0) {
+                    echo "<script>
+                            alert('You have already checked in today.');
+                            window.location.href = '".$urlval."index.php';
+                          </script>";
+                } else {
+                    $timeIn = date("Y-m-d H:i:s");
 
-                // Redirect to the index page
-                header("Location: ".$urlval."index.php");
-                exit();
+                    // Prepare and execute query to insert attendance record
+                    $insertStmt = $conn->prepare("INSERT INTO tbl_attendance (tbl_student_id, tbl_user_id, time_in, qr_code) VALUES (:tbl_student_id, :user_id, :time_in, :qr_code)");
+                    $insertStmt->bindParam(":tbl_student_id", $studentID, PDO::PARAM_STR);
+                    $insertStmt->bindParam(":user_id", $userID, PDO::PARAM_STR);
+                    $insertStmt->bindParam(":time_in", $timeIn, PDO::PARAM_STR);
+                    $insertStmt->bindParam(":qr_code", $qrCode, PDO::PARAM_STR);
+
+                    $insertStmt->execute();
+
+                    // Redirect to the index page
+                    header("Location: ".$urlval."index.php");
+                    exit();
+                }
             } else {
                 echo "<script>
                         alert('No student found with the provided QR code.');
