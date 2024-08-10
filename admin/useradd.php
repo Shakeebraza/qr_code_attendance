@@ -32,7 +32,7 @@ include_once('header.php');
                         <label for="type" class="form-label">User Type</label>
                         <select class="form-select" id="type" name="type">
                             <option value="0">User</option>
-                            <option value="2">Supervisor</option>
+                            <option value="1">Supervisor</option>
                         </select>
                     </div>
                     <div class="mb-3">

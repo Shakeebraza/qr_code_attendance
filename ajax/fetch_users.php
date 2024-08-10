@@ -54,7 +54,7 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir) {
 
         // Display status text
         $row['verified'] = $row['verified'] == 0 ? "Unverified" : "Verified";
-        $row['type'] = $row['type'] == 0 ? "Active" : "Inactive";
+        $row['type'] = $row['type'] == 0 ? "User" : "Admin";
     }
     return $data;
 }
