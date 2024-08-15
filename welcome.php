@@ -58,6 +58,7 @@ $chksAdmin = $funObject->isAdmin();
         .modal-footer button:hover {
             background-color: #666;
         }
+        
     </style>
 </head>
 <body>
@@ -96,62 +97,73 @@ include_once('menu.php');
       <h1 class="text-xl md:text-2xl font-bold tracking-tight text-gray-800">
         List of Today's Present Employees
       </h1>
-      <?php
-        $currentDate = date('Y-m-d');
+<?php
+// Set the current date
+$currentDate = date('Y-m-d');
 
-        try {
-            $stmt = $conn->prepare("SELECT 
-                                        tbl_attendance.tbl_attendance_id,
-                                        users.username AS user_name,
-                                        users.email AS user_email,
-                                        users.profile AS user_profile,
-                                        DATE(tbl_attendance.time_in) AS attendance_date,
-                                        TIME(tbl_attendance.time_in) AS time_in
-                                    FROM tbl_attendance 
-                                    LEFT JOIN users 
-                                    ON users.id = tbl_attendance.tbl_user_id 
-                                    WHERE DATE(tbl_attendance.time_in) = :currentDate");
-            $stmt->bindParam(':currentDate', $currentDate);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
-            echo "An error occurred while processing your request.";
-        }
-      ?>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left bg-white border border-gray-300 rounded-lg">
-          <thead class="bg-gray-200 text-gray-800">
+try {
+    // Prepare the SQL query to fetch attendance records for the current date
+    $stmt = $conn->prepare("SELECT 
+                                tbl_attendance.tbl_attendance_id,
+                                users.username AS user_name,
+                                tbl_attendance.room AS room,
+                                users.email AS user_email,
+                                users.profile AS user_profile,
+                                DATE(tbl_attendance.time_in) AS attendance_date,
+                                TIME(tbl_attendance.time_in) AS time_in
+                            FROM tbl_attendance 
+                            LEFT JOIN users 
+                            ON users.id = tbl_attendance.tbl_user_id 
+                            WHERE DATE(tbl_attendance.time_in) = :currentDate");
+    // Bind the current date parameter
+    $stmt->bindParam(':currentDate', $currentDate);
+    // Execute the query
+    $stmt->execute();
+    // Fetch the results as an associative array
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Log any database errors and display a generic error message
+    error_log("Database error: " . $e->getMessage());
+    echo "An error occurred while processing your request.";
+}
+?>
+
+<!-- HTML Table to Display Attendance Records -->
+<div class="overflow-x-auto">
+    <table class="w-full text-left bg-white border border-gray-300 rounded-lg">
+        <thead class="bg-gray-200 text-gray-800">
             <tr>
-              <th class="p-2">ID</th>
-              <th class="p-2">Name</th>
-              <th class="p-2">Email</th>
-              <th class="p-2">Profile</th>
-              <th class="p-2">Date</th>
-              <th class="p-2">Time</th>
+                <th class="p-2">ID</th>
+                <th class="p-2">Name</th>
+                <th class="p-2">Email</th>
+                <th class="p-2">Profile</th>
+                <th class="p-2">Date</th>
+                <th class="p-2">Room</th>
+                <th class="p-2">Time</th>
             </tr>
-          </thead>
-          <tbody class="text-gray-700">
-              <?php foreach ($result as $row) { ?>
-                <tr class="border-b border-gray-200">
-                    <td class="p-2"><?= htmlspecialchars($row['tbl_attendance_id']) ?></td>
-                    <td class="p-2"><?= htmlspecialchars($row['user_name']) ?></td>
-                    <td class="p-2"><?= htmlspecialchars($row['user_email']) ?></td>
-                    <td class="p-2">
+        </thead>
+        <tbody class="text-gray-700">
+            <?php foreach ($result as $row) { ?>
+            <tr class="border-b border-gray-200">
+                <td class="p-2"><?= htmlspecialchars($row['tbl_attendance_id']) ?></td>
+                <td class="p-2"><?= htmlspecialchars($row['user_name']) ?></td>
+                <td class="p-2"><?= htmlspecialchars($row['user_email']) ?></td>
+                <td class="p-2">
                     <?php if (!empty($row['user_profile'])): ?>
-                    <img src="<?= htmlspecialchars($row['user_profile']) ?>" alt="Profile Picture" class="img-thumbnail rounded-circle" style="max-width: 100px; max-height: 62px;">
-                     <?php else: ?>
-                    <img src="<?= htmlspecialchars($urlval) ?>admin/img/user.jpg" alt="Profile Picture" class="img-thumbnail rounded-circle" style="max-width: 100px; max-height: 62px;">
+                        <img src="<?= htmlspecialchars($row['user_profile']) ?>" alt="Profile Picture" class="img-thumbnail rounded-circle" style="max-width: 100px; max-height: 62px;">
+                    <?php else: ?>
+                        <img src="<?= htmlspecialchars($urlval) ?>admin/img/user.jpg" alt="Profile Picture" class="img-thumbnail rounded-circle" style="max-width: 100px; max-height: 62px;">
                     <?php endif; ?>
-                    </td>
-                    <td class="p-2"><?= htmlspecialchars($row['attendance_date']) ?></td>
-                    <td class="p-2"><?= htmlspecialchars($row['time_in']) ?></td>
-                </tr>
-                <?php } ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
+                </td>
+                <td class="p-2"><?= htmlspecialchars($row['attendance_date']) ?></td>
+                <td class="p-2"><?= empty($row['room']) ? "Waiting..." : htmlspecialchars($row['room']) ?></td>
+                <td class="p-2"><?= htmlspecialchars($row['time_in']) ?></td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+</div>
+
   </div>
 </div>
 

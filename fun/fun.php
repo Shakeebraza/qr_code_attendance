@@ -169,92 +169,26 @@ class Fun {
             ];
         }
     }
-    // public function GetUserAttendance($date = NULL, $name = NULL, $email = NULL, $time = NULL) {
-    //     try {
-    //         $query = "SELECT 
-    //                       users.id,
-    //                       users.username,
-    //                       users.email,
-    //                       users.profile,
-    //                       attendance.time_in
-    //                   FROM 
-    //                       users
-    //                   JOIN 
-    //                       tbl_attendance attendance ON users.id = attendance.tbl_user_id";
-    
-    //         $conditions = [];
-    //         $params = [];
-    
-    //         if (!empty($date)) {
-    //             $conditions[] = "DATE(attendance.time_in) = :date";
-    //             $params[':date'] = $date; // Ensure $date is in YYYY-MM-DD format
-    //         }
-    //         if (!empty($name)) {
-    //             $conditions[] = "users.username LIKE :name";
-    //             $params[':name'] = "%$name%";
-    //         }
-    //         if (!empty($email)) {
-    //             $conditions[] = "users.email LIKE :email";
-    //             $params[':email'] = "%$email%";
-    //         }
-    //         if (!empty($time)) {
-    //             $conditions[] = "TIME(attendance.time_in) = :time";
-    //             $params[':time'] = $time;
-    //         }
-    
-    //         if (count($conditions) > 0) {
-    //             $query .= " WHERE " . implode(' AND ', $conditions);
-    //         }
-    
-    //         // Debugging: Output the query and parameters
-    //         error_log("SQL Query: " . $query);
-    //         error_log("Parameters: " . print_r($params, true));
-    
-    //         $stmt = $this->conn->prepare($query);
-    
-    //         // Bind parameters
-    //         foreach ($params as $key => $value) {
-    //             $stmt->bindValue($key, $value);
-    //         }
-    
-    //         $stmt->execute();
-    //         $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    //         // Debugging: Output the result
-    //         error_log("Query Result: " . print_r($userRecords, true));
-    
-    //         return [
-    //             'count' => count($userRecords),
-    //             'records' => $userRecords
-    //         ];
-    //     } catch (PDOException $e) {
-    //         // Log the error message
-    //         error_log("Error: " . $e->getMessage());
-    
-    //         return [
-    //             'count' => 0,
-    //             'records' => []
-    //         ];
-    //     }
-    // }
-    
     
     public function GetUserAttendance($date = NULL, $name = NULL, $email = NULL, $time = NULL) {
         try {
             // Base query
             $query = "SELECT 
-                          users.id,
-                          users.username,
-                          users.email,
-                          users.profile,
-                          attendance.time_in,
-                          attendance.tbl_attendance_id,
-                          attendance.qr_code,
-                          attendance.room
-                      FROM 
-                          users
-                      JOIN 
-                          tbl_attendance attendance ON users.id = attendance.tbl_user_id";
+                                users.id,
+                                users.username,
+                                users.email,
+                                users.profile,
+                                attendance.time_in,
+                                attendance.tbl_attendance_id,
+                                attendance.qr_code,
+                                attendance.room,
+                                student.worktype
+                            FROM 
+                                users
+                            JOIN 
+                                tbl_attendance attendance ON users.id = attendance.tbl_user_id
+                            JOIN
+                                tbl_student student ON attendance.tbl_student_id = student.tbl_student_id";
         
             // Initialize conditions and parameters
             $conditions = [];
@@ -314,6 +248,9 @@ class Fun {
             ];
         }
     }
+    
+    
+    
     public function GetUserAdvanceAttendance($fromdate = NULL, $todate = NULL, $name = NULL, $email = NULL, $room = NULL) {
         try {
             // Base query
@@ -393,9 +330,81 @@ class Fun {
             ];
         }
     }
+        public function GetRooms() {
+            try {
+        
+                
+                $query = "SELECT * FROM rooms";
+                $statement = $this->conn->prepare($query);
+                
+                $statement->execute();
+                
+                $rooms = $statement->fetchAll(PDO::FETCH_ASSOC);
+                
+                return json_encode([
+                    'status' => 'success',
+                    'data' => $rooms
+                ]);
+            } catch (PDOException $e) {
+                return json_encode([
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ]);
+            }
+            }
     
-    
-    
+                public function GetTodayAttendance() {
+                    try {
+                  
+                        $todayDate = date('Y-m-d');
+                        
+                    
+                        $query = "SELECT 
+                                users.id,
+                                users.username,
+                                users.email,
+                                users.profile,
+                                attendance.time_in,
+                                attendance.tbl_attendance_id,
+                                attendance.qr_code,
+                                attendance.room,
+                                student.worktype
+                            FROM 
+                                users
+                            JOIN 
+                                tbl_attendance attendance ON users.id = attendance.tbl_user_id
+                            JOIN
+                                tbl_student student ON attendance.tbl_student_id = student.tbl_student_id
+                            WHERE 
+                                DATE(attendance.time_in) = :todayDate";
+                        
+                        $stmt = $this->conn->prepare($query);
+                        
+                      
+                        $stmt->bindValue(':todayDate', $todayDate);
+                        
+                        $stmt->execute();
+                        $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        
+            
+                        return json_encode([
+                            'count' => count($userRecords),
+                            'records' => $userRecords
+                        ]);
+                    } catch (PDOException $e) {
+                    
+                        error_log("Error: " . $e->getMessage());
+                        
+                    
+                        return json_encode([
+                            'count' => 0,
+                            'records' => [],
+                            'error' => $e->getMessage()
+                        ]);
+                    }
+                }
+
+
     
     
 }

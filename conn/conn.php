@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "qr_attendance_db";
+$username = "u227020428_karaokesystem";
+$password = "Karaokesystem*009";
+$dbname = "u227020428_karaokesystem";
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);

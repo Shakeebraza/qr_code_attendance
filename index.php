@@ -66,15 +66,16 @@ if ($res == 1) {
       
         </header>
         <nav>
-            <a href="<?php echo $urlval ?>singup.php">Singup</a>
+            <a href="<?php echo $urlval ?>singup.php">Signup</a>
             <a href="<?php echo $urlval ?>login.php">Login</a>
     </nav>
     <div class="container">
-        <h2>Welcome to the Attendance Management System</h2>
+        <h2>Welcome to Norajokaraoke Attendance Management</h2>
         <p>Manage your attendance efficiently with our system.</p>
+        
     </div>
     <footer>
-        <p>Created by Fission Fox</p>
+        <p>Created by <b>Fission Fox</b></p>
     </footer>
 </body>
 </html>

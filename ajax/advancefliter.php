@@ -13,8 +13,8 @@ $data = array();
 
 foreach ($result['records'] as $row) {
     $dateTime = new DateTime($row['time_in']);
-    $row['date'] = $dateTime->format('Y-m-d');
-    $row['time'] = $dateTime->format('H:i:s');
+    $row['date'] = $dateTime->format('d-M-Y');
+    $row['time'] = $dateTime->format('h:i A');
 
     $row['profile'] = $urlval . $row['profile'];
     $row['room'] = $row['room'] == NULL ? "Not set a room" : $row['room'];

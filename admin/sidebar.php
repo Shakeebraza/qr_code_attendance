@@ -23,8 +23,22 @@
                             <a href="useradd.php" class="dropdown-item">Add user</a>
                         </div>
                     </div>
-                    <a href="attendance.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Today Attendance</a>
-                    <a href="filterattendance.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Filter Attendance</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa fa-chart-bar me-2"></i>Attendance</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                                    <a href="attendance.php" class="dropdown-item">Attendance</a>
+                                    <a href="todayattendance.php" class="dropdown-item">Today Attendance</a>
+                                    <a href="filterattendance.php" class="dropdown-item">Filter Attendance</a>
+                        </div>
+                    </div>
+
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-object-ungroup me-2"></i>Room</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="room.php" class="dropdown-item">All Room</a>
+                            <a href="roomadd.php" class="dropdown-item">Add Room</a>
+                        </div>
+                    </div>
               
                 </div>
             </nav>

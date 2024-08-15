@@ -12,7 +12,7 @@ if ($res == 0 || $chksAdmin == 0) {
 
 <head>
     <meta charset="utf-8">
-    <title>Fission fox Penal</title>
+    <title>Fission fox Panel</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -48,7 +48,6 @@ if ($res == 0 || $chksAdmin == 0) {
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 
-    
     
 </head>
 

@@ -14,13 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     WHERE tbl_attendance_id = :userId");
 
             $stmt->bindParam(':roomName', $roomName, PDO::PARAM_STR);
-            // $stmt->bindParam(':qrcode', $qrcode, PDO::PARAM_STR);
             $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                echo json_encode(['status' => 'success', 'message' => 'Room assigned successfully']);
+                echo json_encode(['status' => 'success', 'message' => 'Room(s) assigned successfully']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to assign room']);
+                echo json_encode(['status' => 'error', 'message' => 'Failed to assign room(s)']);
             }
         } catch (PDOException $e) {
             echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
@@ -32,3 +31,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
 ?>
+

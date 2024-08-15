@@ -11,9 +11,16 @@ if ($res == 0) {
 // Check if the user is an admin
 $chkIsAdmin = $funObject->isAdmin();
 ?>
+<style>
+    #drawerMenu {
+    transform: translateX(100%); /* Drawer is hidden by default */
+    transition: transform 0.3s ease-in-out;
+}
 
-
-
+#drawerMenu.open {
+    transform: translateX(0); /* Drawer is visible when 'open' class is added */
+}
+</style>
 <nav class="bg-black py-3 px-4 text-white">
     <div class="container mx-auto px-4 flex justify-between items-center">
         <a class="text-xl font-bold" href="#">Norajokaraoke QR Code Attendance System</a>
@@ -23,7 +30,6 @@ $chkIsAdmin = $funObject->isAdmin();
             </svg>
         </button>
         <div class="hidden md:flex space-x-4">
-            <!-- Navigation links for larger screens -->
             <a href="./welcome.php" class="hover:text-gray-300">Home</a>
             <?php
             if ($chkIsAdmin == 1 || $chkIsAdmin == 2) {
@@ -86,5 +92,45 @@ $chkIsAdmin = $funObject->isAdmin();
     </div>
 </nav>
 
+<!-- JavaScript for drawer and dropdown -->
+<script>
+// Drawer menu script
+document.addEventListener('DOMContentLoaded', function() {
+    const drawerButton = document.getElementById('drawerButton');
+    const drawerMenu = document.getElementById('drawerMenu');
+    const closeDrawer = document.getElementById('closeDrawer');
 
+    // Toggle the drawer menu
+    drawerButton.addEventListener('click', () => {
+        drawerMenu.classList.toggle('open');
+    });
 
+    // Close the drawer menu
+    closeDrawer.addEventListener('click', () => {
+        drawerMenu.classList.remove('open');
+    });
+
+    // Close drawer if clicked outside
+    document.addEventListener('click', function(event) {
+        if (!drawerMenu.contains(event.target) && !drawerButton.contains(event.target)) {
+            drawerMenu.classList.remove('open');
+        }
+    });
+});
+
+// Dropdown menu script
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownButton = document.getElementById('dropdownButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    dropdownButton.addEventListener('click', function() {
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+});
+</script>
