@@ -68,7 +68,7 @@ include_once('menu.php');
 <div class="w-full h-full lg:h-screen bg-gray-100 flex justify-center items-center p-4">
   <div class="w-full h-4/5 max-w-4xl lg:max-w-7xl shadow-lg rounded-lg bg-white grid grid-cols-1 lg:grid-cols-6 gap-4 p-4 mx-auto">
 
-     <?php if($chksAdmin == 1) {?>
+     <?php if($chksAdmin != 0) {?>
     <div class="col-span-1 lg:col-span-2 h-full rounded-md shadow-md p-4 space-y-5 bg-gray-50 px-8">
       <h1 class="text-xl md:text-2xl font-bold tracking-tight text-gray-800">
         Scan Your QR Code Here
@@ -176,9 +176,9 @@ include('script.php');
 let scanner;
 let cameraStarted = false;
 let cameras = [];
-let currentCameraIndex = 0;
+let currentCameraIndex = 1;
 
-function startScanner(cameraIndex = 0) {
+function startScanner(cameraIndex = 1) { // Default to back camera (index 1)
     scanner = new Instascan.Scanner({ video: document.getElementById('interactive') });
 
     scanner.addListener('scan', function (content) {
@@ -193,21 +193,25 @@ function startScanner(cameraIndex = 0) {
     Instascan.Camera.getCameras().then(function (availableCameras) {
         cameras = availableCameras;
 
-        if (cameras.length > 0) {
-            scanner.start(cameras[cameraIndex]);
-            cameraStarted = true;
-            document.getElementById('toggle-camera').innerText = 'Stop Camera';
-            
-            if (cameraIndex === 1) { 
-                document.getElementById('interactive').style.transform = 'none'; 
+        if (cameras.length > 1) {
+            scanner.start(cameras[cameraIndex]); 
+            if (cameraIndex === 0) { 
+                document.getElementById('interactive').style.transform = 'scaleX(-1)'; // Mirror front camera view
             } else {
-                document.getElementById('interactive').style.transform = 'scaleX(-1)'; 
+                document.getElementById('interactive').style.transform = 'none'; // No mirroring for back camera
             }
-
-            currentCameraIndex = cameraIndex; 
+        } else if (cameras.length > 0) {
+            scanner.start(cameras[0]); 
+            if (cameraIndex === 0) { 
+                document.getElementById('interactive').style.transform = 'scaleX(-1)'; // Mirror front camera view
+            }
         } else {
             alert('No cameras found.');
         }
+
+        cameraStarted = true;
+        document.getElementById('toggle-camera').innerText = 'Stop Camera';
+        currentCameraIndex = cameraIndex; 
     }).catch(function (err) {
         console.error('Camera access error:', err);
         alert('Camera access error: ' + err);
@@ -225,7 +229,7 @@ function stopScanner() {
 
 function switchCamera() {
     if (cameras.length > 1) {
-        let newCameraIndex = (currentCameraIndex + 1) % cameras.length;
+        let newCameraIndex = currentCameraIndex === 1 ? 0 : 1; // Toggle between front and back camera
         stopScanner();
         startScanner(newCameraIndex);
     } else {
@@ -244,7 +248,7 @@ document.getElementById('toggle-camera').addEventListener('click', function () {
 document.getElementById('switch-camera').addEventListener('click', switchCamera);
 
 document.addEventListener('DOMContentLoaded', function () {
-    startScanner(currentCameraIndex); 
+    startScanner(1); // Start with the back camera (index 1) when the page loads
 });
 </script>
 </body>

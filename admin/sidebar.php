@@ -26,9 +26,22 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa fa-chart-bar me-2"></i>Attendance</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                                    <a href="attendance.php" class="dropdown-item">Attendance</a>
-                                    <a href="todayattendance.php" class="dropdown-item">Today Attendance</a>
-                                    <a href="filterattendance.php" class="dropdown-item">Filter Attendance</a>
+                                    
+                                    
+                                    <?php
+                                    if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == ADMIN_USER_ID) {
+                                        echo '
+                                        <a href="attendance.php" class="dropdown-item">Attendance</a>
+                                        <a href="todayattendance.php" class="dropdown-item">Today Attendance</a>
+                                        <a href="filterattendance.php" class="dropdown-item">Filter Attendance</a>
+                                        ';
+                                    }else{
+                                        echo '
+                                        <a href="attendance.php" class="dropdown-item">Today Attendance</a>
+                                        ';
+                                    }
+                                    ?>
+                                    
                         </div>
                     </div>
 

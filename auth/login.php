@@ -22,6 +22,8 @@ try {
             // Verified
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['actual_name'] = $user['actual_name'];
+            $_SESSION['work_name'] = $user['work_name'];
             $_SESSION['type'] = $user['type'];
             $_SESSION['verified'] = $user['verified'];
             $_SESSION['profile'] = $user['profile'];

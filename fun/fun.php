@@ -177,6 +177,8 @@ class Fun {
                                 users.id,
                                 users.username,
                                 users.email,
+                                users.actual_name,
+                                users.work_name,
                                 users.profile,
                                 attendance.time_in,
                                 attendance.tbl_attendance_id,

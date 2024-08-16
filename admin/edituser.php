@@ -10,7 +10,10 @@ if (!isset($_GET['userid']) || empty($_GET['userid'])) {
     $id = base64_decode($_GET['userid']);
 
     $find = $funObject->FindUser(base64_decode($id));
-
+    if($find['records'][0]['type'] == 1){
+        header('Location: ../login.php');
+        exit();
+    }
     if ($find['count'] < 1) {
         header('Location: ../login.php');
         exit(); 

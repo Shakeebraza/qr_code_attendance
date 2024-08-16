@@ -25,11 +25,11 @@ $users=$funObject->GetAllUser();
             <table id="users-table" class="table">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                            
                                 <th scope="col">User</th>
-                                <th scope="col">Email</th>
+                 
                                 <th scope="col">Type</th>
-                                <th scope="col">images</th>
+                            
                                 <th scope="col">Status</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -60,11 +60,11 @@ $(document).ready(function() {
             }
         },
         "columns": [
-            { "data": "id" },
+           
             { "data": "username" },
-            { "data": "email" },
+        
             { "data": "type" },
-            { "data": "profile" },
+          
             { "data": "verified" },
             { "data": "action", "sortable": false } 
         ]

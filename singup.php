@@ -96,10 +96,10 @@ $chkIsAdmin = $funObject->isAdmin();
         
         if (numberInput.length < 10) {
             errorMessage.style.display = 'block';
-            return false; // Prevent form submission
+            return false; 
         } else {
             errorMessage.style.display = 'none';
-            return true; // Allow form submission
+            return true; 
         }
     }
 </script>

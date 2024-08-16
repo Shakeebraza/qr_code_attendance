@@ -2,13 +2,12 @@
 
 include_once('../conn/conn.php');
 include_once('../global.php');
-
 function getUsers($search, $start, $length, $orderColumn, $orderDir) {
     global $conn;
     global $urlval;
 
     // Base query
-    $query = "SELECT id, username, email, type, profile, verified FROM users WHERE type !=1";
+    $query = "SELECT id, username, email, type, profile, verified FROM users WHERE id != :user_id";
 
     // Apply search filter
     if (!empty($search)) {
@@ -24,12 +23,11 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir) {
     // Prepare the statement
     $stmt = $conn->prepare($query);
 
-    // Bind search parameter
+    // Bind parameters
     if (!empty($search)) {
         $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
     }
-
-    // Bind pagination parameters
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
     $stmt->bindValue(':start', (int)$start, PDO::PARAM_INT);
     $stmt->bindValue(':length', (int)$length, PDO::PARAM_INT);
 
@@ -39,22 +37,31 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir) {
 
     // Add action buttons to each row
     foreach ($data as &$row) {
-        $row['action'] = '
-            <a href="'.$urlval.'admin/viewuser.php?userid=' . base64_encode(base64_encode($row['id'])) . '" class="btn btn-outline-info m-2" data-id="' . $row['id'] . '">View</a>
-            <a href="'.$urlval.'admin/edituser.php?userid=' . base64_encode(base64_encode($row['id'])). '" class="btn btn-outline-success m-2" data-id="' . $row['id'] . '">Edit</a>
-            <button type="button" class="btn btn-outline-primary m-2 delete-btn" data-id="' . $row['id'] . '">Delete</button>';
+        $row['action']= "";
 
-        if(!empty($row['profile'] )){
-            
+        if($row['type'] == 0){
+        $row['action'] .= '
+        <a href="'.$urlval.'admin/edituser.php?userid=' . base64_encode(base64_encode($row['id'])). '" class="btn btn-outline-success m-2" data-id="' . $row['id'] . '">Edit</a>';
+        }
+        if($_SESSION['type'] == 2){
+            $row['action'] .= '
+            <a href="'.$urlval.'admin/viewuser.php?userid=' . base64_encode(base64_encode($row['id'])) . '" class="btn btn-outline-info m-2" data-id="' . $row['id'] . '">View</a>';
+            }
+        if($_SESSION['type'] == 2){
+            $row['action'] .= '
+            <button type="button" class="btn btn-outline-primary m-2 delete-btn" data-id="' . $row['id'] . '">Delete</button>';
+        }
+
+        // Profile image handling
+        if (!empty($row['profile'])) {
             $row['profile'] = "<img class='tableimage' src='" .$urlval. $row['profile'] . "' alt='Profile Image' style='width: 50px; height: 50px;' />";
-        }else{
+        } else {
             $row['profile'] = "<img class='tableimage' src='".$urlval."admin/img/user.jpg' alt='Profile Image' style='width: 50px; height: 50px;' />";
-            
         }
 
         // Display status text
         $row['verified'] = $row['verified'] == 0 ? "Unverified" : "Verified";
-        $row['type'] = $row['type'] == 0 ? "User" : "Admin";
+        $row['type'] = $row['type'] == 0 ? "User" : "Supervisor";
     }
     return $data;
 }
@@ -73,14 +80,28 @@ $orderColumn = $columns[$orderColumnIndex];
 // Fetch user data
 $data = getUsers($search, $start, $length, $orderColumn, $orderDir);
 
-// Get total records count
-$totalRecords = $conn->query("SELECT COUNT(*) FROM users")->fetchColumn();
+// Get total records count (total and filtered)
+$totalRecordsQuery = "SELECT COUNT(*) FROM users WHERE id != :user_id";
+$totalRecordsStmt = $conn->prepare($totalRecordsQuery);
+$totalRecordsStmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+$totalRecordsStmt->execute();
+$totalRecords = $totalRecordsStmt->fetchColumn();
+
+$searchCondition = !empty($search) ? " AND (username LIKE :search OR email LIKE :search)" : '';
+$totalFilteredRecordsQuery = "SELECT COUNT(*) FROM users WHERE id != :user_id" . $searchCondition;
+$totalFilteredRecordsStmt = $conn->prepare($totalFilteredRecordsQuery);
+$totalFilteredRecordsStmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+if (!empty($search)) {
+    $totalFilteredRecordsStmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+}
+$totalFilteredRecordsStmt->execute();
+$totalFilteredRecords = $totalFilteredRecordsStmt->fetchColumn();
 
 // Return JSON response
 echo json_encode([
     "draw" => intval($_POST['draw']),
-    "recordsTotal" => $totalRecords,
-    "recordsFiltered" => $totalRecords,  // Assuming filtered count is the same as total count for simplicity
+    "recordsTotal" => intval($totalRecords),
+    "recordsFiltered" => intval($totalFilteredRecords),
     "data" => $data
 ]);
 ?>

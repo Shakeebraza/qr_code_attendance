@@ -1,6 +1,9 @@
 <?php
 include_once('header.php');
-
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != ADMIN_USER_ID) {
+    header('Location: ../login.php');
+    exit();
+}
 ?>
 <style>
 #attendance-table thead th {

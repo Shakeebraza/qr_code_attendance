@@ -2,6 +2,10 @@
 include_once('header.php');
 $todayDate = date('Y-m-d');
 $data = json_decode($funObject->GetTodayAttendance(), true);
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != ADMIN_USER_ID) {
+    header('Location: ../login.php');
+    exit();
+}
 ?>
 <style>
 /* You can add any custom styling here */
