@@ -3,7 +3,11 @@ include_once('global.php');
 $res = $funObject->checksession();
 if($res == 0){
     header('Location: login.php');
+    exit();
 }
+$checkworks=$funObject->checkuserworker($_SESSION['user_id']);
+
+@$checkAssignRoom =$funObject->checkAssignRoom($_SESSION['user_id']);
 
 ?>
 
@@ -68,6 +72,9 @@ if($res == 0){
         table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting_asc_disabled, table.dataTable thead > tr > th.sorting_desc_disabled, table.dataTable thead > tr > td.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting_asc_disabled, table.dataTable thead > tr > td.sorting_desc_disabled {
             text-align: center;
         }
+        button.btn.btn-success.btn-sm {
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -83,7 +90,13 @@ include_once('menu.php');
             <div class="student-list">
                 <div class="title">
                     <h4>Employee</h4>
-                    <button class="btn btn-dark" data-toggle="modal" data-target="#addStudentModal">Genrate QR Code</button>
+                    <?php
+                    // var_dump($checkworks);
+                    if($checkworks['record_count'] != 1){
+                        echo'
+                        <button class="btn btn-dark" data-toggle="modal" data-target="#addStudentModal">Genrate QR Code</button>';
+                    }
+                    ?>
                 </div>
                 
                 <hr>
@@ -95,6 +108,7 @@ include_once('menu.php');
                                 <th scope="col">Name</th>
                                 <th scope="col">Date</th>
                                 <th scope="col">Time</th>
+                                <th scope="col">Work type</th>
                                 <th scope="col">QR Code</th>
                             </tr>
                         </thead>
@@ -125,6 +139,7 @@ include_once('menu.php');
                                         $datetime = new DateTime($row["date"]);
                                         $date = $datetime->format('Y-m-d');
                                         $time = $datetime->format('H:i:s');
+                                        $Work = $row["worktype"];
                                         $qrCode = $row["generated_code"];
                                     ?>
 
@@ -141,10 +156,31 @@ include_once('menu.php');
                                                 <td id="studentTime-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
                                                     <?= htmlspecialchars($time, ENT_QUOTES, 'UTF-8') ?>
                                                 </td>
+                                                <td id="studentName-<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
+                                                    <?= htmlspecialchars($Work, ENT_QUOTES, 'UTF-8') ?>
+                                                </td>
                                                 <td>
                                                     <div class="action-button">
                                                         <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#qrCodeModal<?= htmlspecialchars($studentID, ENT_QUOTES, 'UTF-8') ?>">
-                                                            <img src="https://cdn-icons-png.flaticon.com/512/1341/1341632.png" alt="" width="16">
+                                                            <img src="https://cdn-icons-png.flaticon.com/512/1341/1341632.png" alt="" width="20">
+                                                            <?php
+                                                            if(isset($checkAssignRoom)){
+                                                                if ($checkworks['record_count'] != 0 && empty($checkAssignRoom['room']) && $checkAssignRoom['tbl_student_id'] == $studentID) {
+                                                                    echo '
+                                                                    <button class="btn btn-success btn-sm" data-toggle="modal" data-worktype="'.$Work.'" data-id="'.$studentID.'" data-target="#editStudentModal">
+                                                                    <i class="fa fa-edit" width="16"></i>
+                                                                    </button>';
+                                                                }
+                                                            }else{
+                                                                
+                                                                if($checkworks['tbl_student_id'] == $studentID){
+                                                                    echo '
+                                                                    <button class="btn btn-success btn-sm" data-toggle="modal" data-worktype="'.$Work.'" data-id="'.$studentID.'" data-target="#editStudentModal">
+                                                                        <i class="fa fa-edit" width="16"></i>
+                                                                    </button>';
+                                                                }
+                                                            }
+                                                            ?>
                                                         </button>
 
                                                         <!-- QR Modal -->
@@ -224,6 +260,42 @@ include_once('menu.php');
             </div>
         </div>
     </div>
+<!-- Modal edit-->
+<div class="modal fade" id="editStudentModal" tabindex="-1" role="dialog" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStudentModalLabel">Edit Student</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="./endpoint/qrgenrateedit.php" method="POST">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($_SESSION['username']); ?>" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="work">Work</option>
+                            <option value="no_work">No Work</option>
+                            <option value="outside_work">Outside Work</option>
+                        </select>
+                    </div>
+
+                    <input type="hidden" id="studentId" name="studentId" value="">
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
     <?php
 include('script.php');
@@ -289,6 +361,18 @@ include('script.php');
         };
     }
 }
+$('#editStudentModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var studentId = button.data('id'); // Extract info from data-* attributes
+    var worktype = button.data('worktype'); // Extract worktype from data-* attributes
+
+    // Update the modal's content.
+    var modal = $(this);
+    modal.find('#studentId').val(studentId);
+    
+    // Set the selected value in the status dropdown
+    modal.find('#status').val(worktype);
+});
     </script>
     
 </body>

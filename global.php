@@ -4,7 +4,7 @@ include_once("conn/conn.php");
 require 'fun/fun.php';
 $funObject = new Fun($conn);
 
-$urlval="https://cita.norajokaraoke.com/";
+$urlval="http://localhost/cita/";
 
 date_default_timezone_set('Asia/Karachi');
 ?>

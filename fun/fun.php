@@ -404,6 +404,94 @@ class Fun {
                     }
                 }
 
+                public function checkuserworker($id) {
+                    $todayDate = date('Y-m-d');
+                    
+                    // Prepare the query to fetch both count and tbl_student_id
+                    $query = "SELECT tbl_student_id, COUNT(*) as record_count 
+                              FROM tbl_student 
+                              WHERE user_id = :userId AND DATE(date) = :todayDate 
+                              GROUP BY tbl_student_id";
+                    $stmt = $this->conn->prepare($query);
+                    
+                    // Bind parameters
+                    $stmt->bindParam(':userId', $id, PDO::PARAM_INT);
+                    $stmt->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
+                    
+                    $stmt->execute();
+                    
+                    // Fetch the result
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    // Return an array with count and tbl_student_id, or null if not found
+                    return $result !== false ? [
+                        'tbl_student_id' => $result['tbl_student_id'],
+                        'record_count' => $result['record_count']
+                    ] : [
+                        'tbl_student_id' => null,
+                        'record_count' => 0
+                    ];
+                }
+
+                public function CheckUserWorkerNew($id) {
+                    $todayDate = date('Y-m-d');
+                    $query = "SELECT tbl_student_id, COUNT(*) as record_count FROM tbl_student 
+                              WHERE user_id = :userId AND DATE(date) = :todayDate
+                              GROUP BY user_id";
+                    $stmt = $this->conn->prepare($query);
+                    
+                    $stmt->bindParam(':userId', $id, PDO::PARAM_INT);
+                    $stmt->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
+                    
+                    $stmt->execute();
+                    
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($result) {
+                        return [
+                            'tbl_student_id' => $result['tbl_student_id'],
+                            'record_count' => $result['record_count']
+                        ];
+                    } else {
+                        return [
+                            'user_id' => null,
+                            'record_count' => 0
+                        ];
+                    }
+                }
+                
+
+                public function checkAssignRoom($id) {
+                    // Get user and record count data
+                    $usertimedata = $this->CheckUserWorkerNew($id);
+                    $todayDate = date('Y-m-d');
+                    
+                    // Check if user_id is valid
+                    if ($usertimedata['tbl_student_id'] !== null) {
+                        // Prepare the query to fetch both tbl_student_id and room
+                        $query = "SELECT tbl_student_id, room FROM tbl_attendance WHERE tbl_student_id = :userId AND DATE(time_in) = :todayDate LIMIT 1";
+                        $stmt = $this->conn->prepare($query);
+                        
+                        // Bind parameters
+                        $stmt->bindParam(':userId', $usertimedata['tbl_student_id'], PDO::PARAM_INT);
+                        $stmt->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
+                        
+                        $stmt->execute();
+                        
+                        // Fetch the result
+                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                        
+                        // Return the result or null if not found
+                        return $result !== false ? $result : null;
+                    } else {
+                        // Return null if user_id is not valid
+                        return null;
+                    }
+                }
+                
+                
+                
+
 
     
     
