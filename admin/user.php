@@ -105,12 +105,21 @@ th {
                             </tr>
                             <tr>
                             
+<<<<<<< HEAD
                                 <th scope="col" id="tableuser">User</th>
                  
                                 <th scope="col" id="tabletype">Type</th>
                             
                                 <th scope="col" id="tablestatus">Status</th>
                                 <th scope="col" id="tableaction">Action</th>
+=======
+                                <th scope="col">User</th>
+                 
+                                <th scope="col">Type</th>
+                            
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
                             </tr>
                         </thead>
                         <tbody>

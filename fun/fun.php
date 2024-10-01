@@ -177,6 +177,7 @@ class Fun {
         }
     }
     
+<<<<<<< HEAD
     //     public function GetUserAttendance($date = NULL, $name = NULL, $email = NULL, $time = NULL) {
     //     try {
     //         // Base query
@@ -198,6 +199,29 @@ class Fun {
     //                     tbl_attendance attendance ON users.id = attendance.tbl_user_id
     //                 JOIN
     //                     tbl_student student ON attendance.tbl_student_id = student.tbl_student_id";
+=======
+    public function GetUserAttendance($date = NULL, $name = NULL, $email = NULL, $time = NULL) {
+        try {
+            // Base query
+            $query = "SELECT 
+                                users.id,
+                                users.username,
+                                users.email,
+                                users.actual_name,
+                                users.work_name,
+                                users.profile,
+                                attendance.time_in,
+                                attendance.tbl_attendance_id,
+                                attendance.qr_code,
+                                attendance.room,
+                                student.worktype
+                            FROM 
+                                users
+                            JOIN 
+                                tbl_attendance attendance ON users.id = attendance.tbl_user_id
+                            JOIN
+                                tbl_student student ON attendance.tbl_student_id = student.tbl_student_id";
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
         
     //         // Initialize conditions and parameters
     //         $conditions = [];

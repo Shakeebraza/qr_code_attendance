@@ -57,8 +57,35 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-object-ungroup me-2"></i><span id="room">Room</span></a>
                         <div class="dropdown-menu bg-transparent border-0">
+<<<<<<< HEAD
                             <a href="room.php" class="dropdown-item"><span id="addroom">All Room</span></a>
                             <a href="roomadd.php" class="dropdown-item"><span id="allroom">Add Room</span></a>
+=======
+                                    
+                                    
+                                    <?php
+                                    if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == ADMIN_USER_ID) {
+                                        echo '
+                                        <a href="attendance.php" class="dropdown-item">Attendance</a>
+                                        <a href="todayattendance.php" class="dropdown-item">Today Attendance</a>
+                                        <a href="filterattendance.php" class="dropdown-item">Filter Attendance</a>
+                                        ';
+                                    }else{
+                                        echo '
+                                        <a href="attendance.php" class="dropdown-item">Today Attendance</a>
+                                        ';
+                                    }
+                                    ?>
+                                    
+                        </div>
+                    </div>
+
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-object-ungroup me-2"></i>Room</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="room.php" class="dropdown-item">All Room</a>
+                            <a href="roomadd.php" class="dropdown-item">Add Room</a>
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
                         </div>
                     </div>
 <?php endif;?>

@@ -2,11 +2,19 @@
 
 include_once('../conn/conn.php');
 include_once('../global.php');
+<<<<<<< HEAD
 function getUsers($search, $start, $length, $orderColumn, $orderDir, $user_type, $status) {
     global $conn;
     global $urlval;
 
        // Base query
+=======
+function getUsers($search, $start, $length, $orderColumn, $orderDir) {
+    global $conn;
+    global $urlval;
+
+    // Base query
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
     $query = "SELECT id, username, email, type, profile, verified FROM users WHERE id != :user_id";
 
     // Apply search filter
@@ -38,12 +46,15 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir, $user_type,
         $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
     }
     $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+<<<<<<< HEAD
     if (!empty($user_type)) {
         $stmt->bindValue(':user_type', $user_type, PDO::PARAM_INT);
     }
     if ($status == 1 || $status == 0) {
         $stmt->bindValue(':status', $status, PDO::PARAM_INT);
     }
+=======
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
     $stmt->bindValue(':start', (int)$start, PDO::PARAM_INT);
     $stmt->bindValue(':length', (int)$length, PDO::PARAM_INT);
 
@@ -52,12 +63,35 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir, $user_type,
 
 
     foreach ($data as &$row) {
+<<<<<<< HEAD
   
         $row['action'] = "";
 
         if($row['type'] == 0){
             $row['action'] .= '
             <a href="'.$urlval.'admin/edituser.php?userid=' . base64_encode(base64_encode($row['id'])). '" class="btn btn-outline-success m-2" data-id="' . $row['id'] . '">Edit</a>';
+=======
+        $row['action']= "";
+
+        if($row['type'] == 0){
+        $row['action'] .= '
+        <a href="'.$urlval.'admin/edituser.php?userid=' . base64_encode(base64_encode($row['id'])). '" class="btn btn-outline-success m-2" data-id="' . $row['id'] . '">Edit</a>';
+        }
+        if($_SESSION['type'] == 2){
+            $row['action'] .= '
+            <a href="'.$urlval.'admin/viewuser.php?userid=' . base64_encode(base64_encode($row['id'])) . '" class="btn btn-outline-info m-2" data-id="' . $row['id'] . '">View</a>';
+            }
+        if($_SESSION['type'] == 2){
+            $row['action'] .= '
+            <button type="button" class="btn btn-outline-primary m-2 delete-btn" data-id="' . $row['id'] . '">Delete</button>';
+        }
+
+        // Profile image handling
+        if (!empty($row['profile'])) {
+            $row['profile'] = "<img class='tableimage' src='" .$urlval. $row['profile'] . "' alt='Profile Image' style='width: 50px; height: 50px;' />";
+        } else {
+            $row['profile'] = "<img class='tableimage' src='".$urlval."admin/img/user.jpg' alt='Profile Image' style='width: 50px; height: 50px;' />";
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
         }
     
     
@@ -91,6 +125,7 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir, $user_type,
     
   
         $row['verified'] = $row['verified'] == 0 ? "Unverified" : "Verified";
+<<<<<<< HEAD
     
        
         if($row['type'] == 1)
@@ -104,6 +139,9 @@ function getUsers($search, $start, $length, $orderColumn, $orderDir, $user_type,
         else{
             $row['type'] = "User";
         }
+=======
+        $row['type'] = $row['type'] == 0 ? "User" : "Supervisor";
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
     }
     return $data;
 }
@@ -132,24 +170,30 @@ $totalRecordsStmt->execute();
 $totalRecords = $totalRecordsStmt->fetchColumn();
 
 $searchCondition = !empty($search) ? " AND (username LIKE :search OR email LIKE :search)" : '';
+<<<<<<< HEAD
 if (!empty($user_type)) {
     $searchCondition .= " AND type = :user_type";
 }
 if (!empty($status)) {
     $searchCondition .= " AND verified = :status";
 }
+=======
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
 $totalFilteredRecordsQuery = "SELECT COUNT(*) FROM users WHERE id != :user_id" . $searchCondition;
 $totalFilteredRecordsStmt = $conn->prepare($totalFilteredRecordsQuery);
 $totalFilteredRecordsStmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
 if (!empty($search)) {
     $totalFilteredRecordsStmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
 }
+<<<<<<< HEAD
 if (!empty($user_type)) {
     $totalFilteredRecordsStmt->bindValue(':user_type', $user_type, PDO::PARAM_INT);
 }
 if (!empty($status)) {
     $totalFilteredRecordsStmt->bindValue(':status', $status, PDO::PARAM_INT);
 }
+=======
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
 $totalFilteredRecordsStmt->execute();
 $totalFilteredRecords = $totalFilteredRecordsStmt->fetchColumn();
 

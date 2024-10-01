@@ -223,6 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="form-container">
         <h2 id="updateprofile">Update Profile</h2>
         <form action="profile.php" method="post" enctype="multipart/form-data">
+<<<<<<< HEAD
             <p id="actualname">Actual Names</p>
             <input type="text" id="actualNameInput" name="actual_name" placeholder="New Actual Name" required 
             value="<?php echo isset($_SESSION['actual_name']) ? $_SESSION['actual_name'] : ''; ?>">
@@ -236,10 +237,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="file" name="file2" accept=".pdf, .jpg, .jpeg, .png, .gif, .bmp, .tiff, .svg">
 
             <button type="submit" id="savechnage">Save Changes</button>
+=======
+            <p>Actual Names</p>
+            <input type="text" name="actual_name" placeholder="New Actual Name" required 
+            value="<?php echo isset($_SESSION['actual_name']) ? $_SESSION['actual_name'] : ''; ?>">
+            <p>Work Names</p>
+            <input type="text" name="work_name" placeholder="New Work name" required 
+            value="<?php echo isset($_SESSION['work_name']) ? $_SESSION['work_name'] : ''; ?>">
+            <p>Test</p>
+            <input type="file" name="file1" accept=".pdf">
+            <p>Id card</p>
+            <input type="file" name="file2" accept=".pdf">
+            <button type="submit">Save Changes</button>
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
         </form>
 
         <?php echo $meg; ?>
     </div>
+<<<<<<< HEAD
   <div class="pdfcontainer" style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;">
     <?php
         $sql = "SELECT * FROM files WHERE user_id = :userid";
@@ -353,5 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 });
     </script>
+=======
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
 </body>
 </html>

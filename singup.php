@@ -117,6 +117,7 @@ $chkIsAdmin = $funObject->isAdmin();
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
     <script>
+<<<<<<< HEAD
         $(document).ready(function() {
             const languageSelect = $('#languageSelect');
             const textElements = {
@@ -180,6 +181,18 @@ $chkIsAdmin = $funObject->isAdmin();
             }
 
             return true; // Allow form submission
+=======
+    function validateForm() {
+        const numberInput = document.getElementById('number').value;
+        const errorMessage = document.getElementById('error-message');
+        
+        if (numberInput.length < 10) {
+            errorMessage.style.display = 'block';
+            return false; 
+        } else {
+            errorMessage.style.display = 'none';
+            return true; 
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
         }
     </script>
 </body>

@@ -1,6 +1,10 @@
 <?php
 include_once('header.php');
+<<<<<<< HEAD
 if (!isset($_SESSION['type']) || $_SESSION['type'] != ADMIN_USER_ID) {
+=======
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != ADMIN_USER_ID) {
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
     header('Location: ../login.php');
     exit();
 }

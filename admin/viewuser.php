@@ -21,7 +21,11 @@ if (!isset($_GET['userid']) || empty($_GET['userid'])) {
         $imageUrl=$urlval.'admin/img/user.jpg';
 
     }
+<<<<<<< HEAD
     if (!isset($_SESSION['type']) || $_SESSION['type'] == 0) {
+=======
+    if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != ADMIN_USER_ID) {
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
         header('Location: ../login.php');
         exit();
     }
@@ -143,6 +147,7 @@ if (!isset($_GET['userid']) || empty($_GET['userid'])) {
                 </div>
                 <?php if($_SESSION['type'] == 2): ?>
                 <div class="mb-3">
+<<<<<<< HEAD
                     <label for="actual_name" class="form-label" id="labactialname">Actual Name</label>
                     <input type="text" class="form-control" id="actual_name" value="<?php echo htmlspecialchars($find['records'][0]['actual_name'] ?? 'Not Set Actual Name'); ?>" readonly>
                 </div>
@@ -153,6 +158,17 @@ if (!isset($_GET['userid']) || empty($_GET['userid'])) {
                 
                 <div class="mb-3">
                     <label for="email" class="form-label" id="labnumber">Number</label>
+=======
+                    <label for="actual_name" class="form-label">Actual Name</label>
+                    <input type="text" class="form-control" id="actual_name" value="<?php echo htmlspecialchars($find['records'][0]['actual_name'] ?? 'Not Set Actual Name'); ?>" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="work_name" class="form-label">Work Name</label>
+                    <input type="text" class="form-control" id="work_name" value="<?php echo htmlspecialchars($find['records'][0]['work_name'] ?? 'Not Set Work Name'); ?>" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Number</label>
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
                     <input type="email" class="form-control" id="email" value="<?php echo $find['records'][0]['email']; ?>" readonly>
                 </div>
                 <?php endif; ?>

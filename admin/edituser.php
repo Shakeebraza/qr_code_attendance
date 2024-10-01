@@ -10,7 +10,11 @@ if (!isset($_GET['userid']) || empty($_GET['userid'])) {
     $id = base64_decode($_GET['userid']);
 
     $find = $funObject->FindUser(base64_decode($id));
+<<<<<<< HEAD
     if($find['records'][0]['type'] == 2){
+=======
+    if($find['records'][0]['type'] == 1){
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
         header('Location: ../login.php');
         exit();
     }

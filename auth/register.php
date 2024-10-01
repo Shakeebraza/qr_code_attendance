@@ -18,6 +18,28 @@ if (empty($username) || empty($email) || empty($password)) {
 try {
     // Check if user already exists
     $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE username = :username OR email = :email");
+<<<<<<< HEAD
+=======
+    $stmt->bindParam(':username', $username);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    $userExists = $stmt->fetchColumn();
+
+    if ($userExists) {
+        // User already exists
+        echo "<script>
+        alert('User already exists. Please use a different username or Number.');
+        window.location.href = '../singup.php'; // Redirect to registration page
+        </script>";
+        exit();
+    }
+
+    // Hash the password
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Prepare and bind for insertion
+    $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
+>>>>>>> 7ff2ec5aa10efce709929748f8c1223c10428c95
     $stmt->bindParam(':username', $username);
     $stmt->bindParam(':email', $email);
     $stmt->execute();
@@ -59,4 +81,6 @@ try {
 
 // Close connection
 $conn = null;
+?>
+
 ?>
