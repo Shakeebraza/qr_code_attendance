@@ -17,8 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         move_uploaded_file($_FILES["profile"]["tmp_name"], $profile);
     }
 
-    $stmt = $conn->prepare("INSERT INTO users (username, profile, email, password, type, verified, date) VALUES (:username, :profile, :email, :password, :type, :verified, CURDATE())");
+    $stmt = $conn->prepare("INSERT INTO users (username,work_name, profile, email, password, type, verified, date) VALUES (:username,:work_name,:profile, :email, :password, :type, :verified, CURDATE())");
     $stmt->bindParam(':username', $username);
+    $stmt->bindParam(':work_name', $username);
     $stmt->bindParam(':profile', $profilee);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':password', $password);

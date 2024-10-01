@@ -1,0 +1,10 @@
+{
+    "title": "Página de Registro",
+    "headerTitle": "Registrarse",
+    "usernamePlaceholder": "Tu Nombre en el Trabajo",
+    "numberPlaceholder": "Número de Teléfono Celular",
+    "passwordPlaceholder": "Contraseña",
+    "loginLink": "¿Ya tienes una cuenta? Iniciar sesión",
+    "registerButton": "Registrar",
+    "errorMessage": "Por favor ingrese al menos 10 dígitos."
+}

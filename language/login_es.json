@@ -1,0 +1,10 @@
+{
+    "title": "Página de Inicio de Sesión",
+    "headerTitle": "Iniciar sesión",
+    "signup": "Registrarse",
+    "loginButton": "Acceso",
+    "loginErrorMessage": "Por favor ingrese al menos 10 dígitos.",
+    "cellPhonePlaceholder": "Número de Teléfono",
+    "passwordPlaceholder": "Contraseña"
+}
+

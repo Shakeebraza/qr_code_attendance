@@ -2,6 +2,11 @@
 
 session_start();
 
+
+
+
+
+
 class Fun {
     private $conn;
 
@@ -125,6 +130,8 @@ class Fun {
             ];
         }
     }
+    
+    
 
     public function FindUser($id) {
         try {
@@ -150,7 +157,7 @@ class Fun {
 
     public function GetUserFiles($id) {
         try {
-            $getatt = $this->conn->prepare("SELECT filename, file_path, input_type FROM files WHERE user_id = :id");
+            $getatt = $this->conn->prepare("SELECT filename, file_path,uploaded_at, input_type FROM files WHERE user_id = :id");
             $getatt->bindParam(":id", $id, PDO::PARAM_INT);
             $getatt->execute();
             $userRecords = $getatt->fetchAll(PDO::FETCH_ASSOC);
@@ -170,166 +177,375 @@ class Fun {
         }
     }
     
-    public function GetUserAttendance($date = NULL, $name = NULL, $email = NULL, $time = NULL) {
-        try {
-            // Base query
-            $query = "SELECT 
-                                users.id,
-                                users.username,
-                                users.email,
-                                users.profile,
-                                attendance.time_in,
-                                attendance.tbl_attendance_id,
-                                attendance.qr_code,
-                                attendance.room,
-                                student.worktype
-                            FROM 
-                                users
-                            JOIN 
-                                tbl_attendance attendance ON users.id = attendance.tbl_user_id
-                            JOIN
-                                tbl_student student ON attendance.tbl_student_id = student.tbl_student_id";
+    //     public function GetUserAttendance($date = NULL, $name = NULL, $email = NULL, $time = NULL) {
+    //     try {
+    //         // Base query
+    //         $query = "SELECT 
+    //                         users.id,
+    //                         users.username,
+    //                         users.email,
+    //                         users.actual_name,
+    //                         users.work_name,
+    //                         users.profile,
+    //                         attendance.time_in,
+    //                         attendance.tbl_attendance_id,
+    //                         attendance.qr_code,
+    //                         attendance.room,
+    //                         student.worktype
+    //                 FROM 
+    //                     users
+    //                 JOIN 
+    //                     tbl_attendance attendance ON users.id = attendance.tbl_user_id
+    //                 JOIN
+    //                     tbl_student student ON attendance.tbl_student_id = student.tbl_student_id";
         
-            // Initialize conditions and parameters
-            $conditions = [];
-            $params = [];
+    //         // Initialize conditions and parameters
+    //         $conditions = [];
+    //         $params = [];
         
-            // Add conditions based on input parameters
-            if (!empty($date)) {
-                $conditions[] = "DATE(attendance.time_in) = :date";
-                $params[':date'] = $date; // Ensure $date is in YYYY-MM-DD format
-            }
-            if (!empty($name)) {
-                $conditions[] = "users.username LIKE :name";
-                $params[':name'] = "%$name%";
-            }
-            if (!empty($email)) {
-                $conditions[] = "users.email LIKE :email";
-                $params[':email'] = "%$email%";
-            }
-            if (!empty($time)) {
-                $conditions[] = "TIME(attendance.time_in) = :time";
-                $params[':time'] = $time;
-            }
+    //         // Define time range for filtering
+    //         $currentDate = $date ?: date('Y-m-d');
+    //         $startAllowedTime = '17:00:00'; // 5 PM
+    //         $endAllowedTime = '04:00:00';   // 4 AM
         
-            // Append conditions to query if any
-            if (count($conditions) > 0) {
-                $query .= " WHERE " . implode(' AND ', $conditions);
-            }
+    //         // Calculate the end date if the time range spans over midnight
+    //         $startDateTime = $currentDate . ' ' . $startAllowedTime;
+    //         $endDateTime = $currentDate . ' ' . $endAllowedTime;
+    //         if ($endAllowedTime < $startAllowedTime) {
+    //             // Adjust endDateTime for the next day
+    //             $endDateTime = date('Y-m-d', strtotime('+1 day')) . ' ' . $endAllowedTime;
+    //         }
         
-            // Debugging: Output the query and parameters
-            error_log("SQL Query: " . $query);
-            error_log("Parameters: " . print_r($params, true));
+    //         // Add conditions based on input parameters
+    //         if (!empty($date)) {
+    //             $conditions[] = "attendance.time_in BETWEEN :startDateTime AND :endDateTime";
+    //             $params[':startDateTime'] = $startDateTime; 
+    //             $params[':endDateTime'] = $endDateTime; 
+    //         }
+    //         if (!empty($name)) {
+    //             $conditions[] = "users.username LIKE :name";
+    //             $params[':name'] = "%$name%";
+    //         }
+    //         if (!empty($email)) {
+    //             $conditions[] = "users.email LIKE :email";
+    //             $params[':email'] = "%$email%";
+    //         }
+    //         if (!empty($time)) {
+    //             $conditions[] = "TIME(attendance.time_in) = :time";
+    //             $params[':time'] = $time;
+    //         }
         
-            $stmt = $this->conn->prepare($query);
+    //         // Append conditions to query if any
+    //         if (count($conditions) > 0) {
+    //             $query .= " WHERE " . implode(' AND ', $conditions);
+    //         }
         
-            // Bind parameters
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
+    //         // Debugging: Output the query and parameters
+    //         error_log("SQL Query: " . $query);
+    //         error_log("Parameters: " . print_r($params, true));
         
-            $stmt->execute();
-            $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //         $stmt = $this->conn->prepare($query);
         
-            // Debugging: Output the result
-            error_log("Query Result: " . print_r($userRecords, true));
+    //         // Bind parameters
+    //         foreach ($params as $key => $value) {
+    //             $stmt->bindValue($key, $value);
+    //         }
         
-            return [
-                'count' => count($userRecords),
-                'records' => $userRecords
-            ];
-        } catch (PDOException $e) {
-            // Log the error message
-            error_log("Error: " . $e->getMessage());
+    //         $stmt->execute();
+    //         $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-            return [
-                'count' => 0,
-                'records' => []
-            ];
+    //         // Debugging: Output the result
+    //         error_log("Query Result: " . print_r($userRecords, true));
+        
+    //         return [
+    //             'count' => count($userRecords),
+    //             'records' => $userRecords
+    //         ];
+    //     } catch (PDOException $e) {
+    //         // Log the error message
+    //         error_log("Error: " . $e->getMessage());
+        
+    //         return [
+    //             'count' => 0,
+    //             'records' => []
+    //         ];
+    //     }
+    // }
+public function GetUserAttendance($date = NULL, $name = NULL, $email = NULL, $time = NULL, $order_column = 'username', $order_dir = 'asc', $room = NULL, $worktype = NULL,$isSetrRoom=NULL) {
+    try {
+        // Base query
+        $query = "SELECT 
+                        users.id,
+                        users.username,
+                        users.email,
+                        users.actual_name,
+                        users.work_name,
+                        users.profile,
+                        attendance.time_in,
+                        attendance.tbl_attendance_id,
+                        attendance.qr_code,
+                        attendance.room,
+                        student.worktype
+                  FROM 
+                      users
+                  JOIN 
+                      tbl_attendance attendance ON users.id = attendance.tbl_user_id
+                  JOIN
+                      tbl_student student ON attendance.tbl_student_id = student.tbl_student_id";
+
+        $conditions = [];
+        $params = [];
+
+        $currentDate = $date ?: date('Y-m-d');
+        $startAllowedTime = '17:00:00'; 
+        $endAllowedTime = '04:00:00';   
+
+        $startDateTime = $currentDate . ' ' . $startAllowedTime;
+        $endDateTime = $currentDate . ' ' . $endAllowedTime;
+
+        if ($endAllowedTime < $startAllowedTime) {
+            $endDateTime = date('Y-m-d', strtotime('+1 day')) . ' ' . $endAllowedTime;
         }
-    }
-    
-    
-    
-    public function GetUserAdvanceAttendance($fromdate = NULL, $todate = NULL, $name = NULL, $email = NULL, $room = NULL) {
-        try {
-            // Base query
-            $query = "SELECT 
-                          users.id,
-                          users.username,
-                          users.email,
-                          users.profile,
-                          attendance.time_in,
-                          attendance.tbl_attendance_id,
-                          attendance.qr_code,
-                          attendance.room
-                      FROM 
-                          users
-                      JOIN 
-                          tbl_attendance attendance ON users.id = attendance.tbl_user_id";
-        
-            // Initialize conditions and parameters
-            $conditions = [];
-            $params = [];
-        
-            // Add conditions based on input parameters
-            if (!empty($fromdate)) {
-                $conditions[] = "DATE(attendance.time_in) >= :fromdate";
-                $params[':fromdate'] = $fromdate;
-            }
-            if (!empty($todate)) {
-                $conditions[] = "DATE(attendance.time_in) <= :todate";
-                $params[':todate'] = $todate;
-            }
-            if (!empty($name)) {
-                $conditions[] = "users.username LIKE :name";
-                $params[':name'] = "%$name%";
-            }
-            if (!empty($email)) {
-                $conditions[] = "users.email LIKE :email";
-                $params[':email'] = "%$email%";
-            }
-            if (!empty($room)) {
-                $conditions[] = "attendance.room LIKE :room";
-                $params[':room'] = "%$room%";
-            }
-        
-            // Append conditions to query if any
-            if (count($conditions) > 0) {
-                $query .= " WHERE " . implode(' AND ', $conditions);
-            }
-        
-            // Debugging: Output the query and parameters
-            error_log("SQL Query: " . $query);
-            error_log("Parameters: " . print_r($params, true));
-        
-            $stmt = $this->conn->prepare($query);
-        
-            // Bind parameters
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-        
-            $stmt->execute();
-            $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-            // Debugging: Output the result
-            error_log("Query Result: " . print_r($userRecords, true));
-        
-            return [
-                'count' => count($userRecords),
-                'records' => $userRecords
-            ];
-        } catch (PDOException $e) {
-            // Log the error message
-            error_log("Error: " . $e->getMessage());
-        
-            return [
-                'count' => 0,
-                'records' => []
-            ];
+
+        if (!empty($date)) {
+            $conditions[] = "attendance.time_in BETWEEN :startDateTime AND :endDateTime";
+            $params[':startDateTime'] = $startDateTime; 
+            $params[':endDateTime'] = $endDateTime; 
         }
+        if (!empty($name)) {
+            $conditions[] = "users.username LIKE :name";
+            $params[':name'] = "%$name%";
+        }
+        if (!empty($email)) {
+            $conditions[] = "users.email LIKE :email";
+            $params[':email'] = "%$email%";
+        }
+        if (!empty($time)) {
+            $conditions[] = "TIME(attendance.time_in) = :time";
+            $params[':time'] = $time;
+        }
+   
+        if (!empty($room)) {
+            $conditions[] = "attendance.room LIKE :room";
+            $params[':room'] = "%$room%";
+        }
+          if (is_null($isSetrRoom)) {
+            $conditions[] = "attendance.room IS NULL OR attendance.room = ''";
+        }else{
+             $conditions[] = "attendance.room IS NOT NULL AND attendance.room != ''";
+        }
+        if (!empty($worktype)) {
+            $conditions[] = "student.worktypeeng LIKE :worktype";
+            $params[':worktype'] = "%$worktype%"; 
+        }
+
+        if (count($conditions) > 0) {
+            $query .= " WHERE " . implode(' AND ', $conditions);
+        }
+
+        if ($order_column == 'time') {
+            $query .= " ORDER BY TIME(attendance.time_in) $order_dir";
+        } elseif ($order_column == 'date') {
+            $query .= " ORDER BY date(attendance.time_in) $order_dir";
+        } else {
+            $query .= " ORDER BY $order_column $order_dir";
+        }
+
+        error_log("SQL Query: " . $query);
+        error_log("Parameters: " . print_r($params, true));
+        
+        $stmt = $this->conn->prepare($query);
+
+        // Bind parameters
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        
+        $stmt->execute();
+        $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Debugging: Output the result
+        error_log("Query Result: " . print_r($userRecords, true));
+
+        return [
+            'count' => count($userRecords),
+            'records' => $userRecords
+        ];
+    } catch (PDOException $e) {
+        // Log the error message
+        error_log("Error: " . $e->getMessage());
+
+        return [
+            'count' => 0,
+            'records' => []
+        ];
     }
+}
+
+
+    
+    
+    
+    // public function GetUserAdvanceAttendance($fromdate = NULL, $todate = NULL, $name = NULL, $email = NULL, $room = NULL) {
+    //     try {
+    //         // Base query
+    //         $query = "SELECT 
+    //                       users.id,
+    //                       users.username,
+    //                       users.email,
+    //                       users.profile,
+    //                       attendance.time_in,
+    //                       attendance.tbl_attendance_id,
+    //                       attendance.qr_code,
+    //                       attendance.room
+    //                   FROM 
+    //                       users
+    //                   JOIN 
+    //                       tbl_attendance attendance ON users.id = attendance.tbl_user_id";
+        
+    //         // Initialize conditions and parameters
+    //         $conditions = [];
+    //         $params = [];
+        
+    //         // Add conditions based on input parameters
+    //         if (!empty($fromdate)) {
+    //             $conditions[] = "DATE(attendance.time_in) >= :fromdate";
+    //             $params[':fromdate'] = $fromdate;
+    //         }
+    //         if (!empty($todate)) {
+    //             $conditions[] = "DATE(attendance.time_in) <= :todate";
+    //             $params[':todate'] = $todate;
+    //         }
+    //         if (!empty($name)) {
+    //             $conditions[] = "users.username LIKE :name";
+    //             $params[':name'] = "%$name%";
+    //         }
+    //         if (!empty($email)) {
+    //             $conditions[] = "users.email LIKE :email";
+    //             $params[':email'] = "%$email%";
+    //         }
+    //         if (!empty($room)) {
+    //             $conditions[] = "attendance.room LIKE :room";
+    //             $params[':room'] = "%$room%";
+    //         }
+        
+    //         // Append conditions to query if any
+    //         if (count($conditions) > 0) {
+    //             $query .= " WHERE " . implode(' AND ', $conditions);
+    //         }
+        
+    //         // Debugging: Output the query and parameters
+    //         error_log("SQL Query: " . $query);
+    //         error_log("Parameters: " . print_r($params, true));
+        
+    //         $stmt = $this->conn->prepare($query);
+        
+    //         // Bind parameters
+    //         foreach ($params as $key => $value) {
+    //             $stmt->bindValue($key, $value);
+    //         }
+        
+    //         $stmt->execute();
+    //         $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    //         // Debugging: Output the result
+    //         error_log("Query Result: " . print_r($userRecords, true));
+        
+    //         return [
+    //             'count' => count($userRecords),
+    //             'records' => $userRecords
+    //         ];
+    //     } catch (PDOException $e) {
+    //         // Log the error message
+    //         error_log("Error: " . $e->getMessage());
+        
+    //         return [
+    //             'count' => 0,
+    //             'records' => []
+    //         ];
+    //     }
+    // }
+public function GetUserAdvanceAttendance($fromdate = NULL, $todate = NULL, $name = NULL, $email = NULL, $room = NULL, $order_column = 'username', $order_dir = 'asc') {
+    try {
+        // Base query
+        $query = "SELECT 
+                      users.id,
+                      users.username,
+                      users.email,
+                      users.profile,
+                      attendance.time_in,
+                      attendance.tbl_attendance_id,
+                      attendance.qr_code,
+                      attendance.room
+                  FROM 
+                      users
+                  JOIN 
+                      tbl_attendance attendance ON users.id = attendance.tbl_user_id";
+
+        $conditions = [];
+        $params = [];
+
+        if (!empty($fromdate)) {
+            $conditions[] = "DATE(attendance.time_in) >= :fromdate";
+            $params[':fromdate'] = $fromdate;
+        }
+        if (!empty($todate)) {
+            $conditions[] = "DATE(attendance.time_in) <= :todate";
+            $params[':todate'] = $todate;
+        }
+        if (!empty($name)) {
+            $conditions[] = "users.username LIKE :name";
+            $params[':name'] = "%$name%";
+        }
+        if (!empty($email)) {
+            $conditions[] = "users.email LIKE :email";
+            $params[':email'] = "%$email%";
+        }
+        if (!empty($room)) {
+            $conditions[] = "attendance.room LIKE :room";
+            $params[':room'] = "%$room%";
+        }
+
+        if (count($conditions) > 0) {
+            $query .= " WHERE " . implode(' AND ', $conditions);
+        }
+        if($order_column == 'time'){
+        $query .= " ORDER BY TIME(time_in) $order_dir";
+            
+        }else{
+             $query .= " ORDER BY $order_column $order_dir";
+        }
+       
+
+        error_log("SQL Query: " . $query);
+        error_log("Parameters: " . print_r($params, true));
+
+        $stmt = $this->conn->prepare($query);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+        $userRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        error_log("Query Result: " . print_r($userRecords, true));
+
+        return [
+            'count' => count($userRecords),
+            'records' => $userRecords
+        ];
+    } catch (PDOException $e) {
+
+        error_log("Error: " . $e->getMessage());
+
+        return [
+            'count' => 0,
+            'records' => []
+        ];
+    }
+}
+
         public function GetRooms() {
             try {
         
@@ -489,10 +705,41 @@ class Fun {
                     }
                 }
                 
+                public function GetFilesDate($id){
+                    if(isset($id)){
+                        $query = "SELECT uploaded_at,input_type FROM files WHERE user_id = :userId";
+                        $stmt = $this->conn->prepare($query);
+                        $stmt->bindParam(':userId', $id, PDO::PARAM_INT);
+                        
+                        $stmt->execute();
+                        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        
+                        if ($result) {
+                            return $result; 
+                        } else {
+                            return null; 
+                        }
+                    } else {
+                        return null;
+                    }
+                }
                 
-                
-
-
+            function getCorrectedDateTime($dateTime) {
+                $timestamp = strtotime($dateTime);
+                $hour = date('H', $timestamp);
+            
+                // Check if the time is between 12:00 AM and 12:00 PM
+                if ($hour < 12) {
+                    // Subtract one day from the date for times between 12:00 AM and 12:00 PM
+                    $correctedDate = date('Y-m-d', strtotime('-1 day', $timestamp));
+                } else {
+                    // Keep the same date for other times
+                    $correctedDate = date('Y-m-d', $timestamp);
+                }
+            
+                // Return the corrected datetime
+                return $correctedDate . ' ' . date('H:i:s', $timestamp);
+            }
     
     
 }

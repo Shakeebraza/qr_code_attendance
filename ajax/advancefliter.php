@@ -3,11 +3,19 @@ include_once('../global.php');
 
 $name = $_POST['name'] ?? '';
 $email = $_POST['email'] ?? '';
-$fromdate = $_POST['fromdate'] ?? '';
-$todate = $_POST['todate'] ?? '';
+$fromdate = $_POST['fromdate'] == "" ? $todayDate : $_POST['fromdate'];
+$todate = $_POST['todate'] =="" ? $todayDate : $_POST['todate'] ;
+// var_dump($_POST['fromdate']);
 $room = $_POST['room'] ?? '';
 
-$result = $funObject->GetUserAdvanceAttendance($fromdate, $todate, $name, $email, $room);
+$order_column = $_POST['order_column'] ?? 'username'; // Default order column
+$order_dir = $_POST['order_dir'] ?? 'asc'; // Default order direction
+
+// Get the result from your function
+$result = $funObject->GetUserAdvanceAttendance($fromdate, $todate, $name, $email, $room, $order_column, $order_dir);
+
+
+// $result = $funObject->GetUserAdvanceAttendance($fromdate, $todate, $name, $email, $room);
 
 $data = array();
 

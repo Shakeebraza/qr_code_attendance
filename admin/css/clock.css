@@ -1,0 +1,38 @@
+   /*CLOCK*/
+
+.clock {
+    font-size: 2rem;
+    padding: 12px 40px;
+    width: 50%;
+    position: absolute;
+    left: 60%;
+    top: 8%;
+    text-align: center;
+    transition: transform 0.3s, filter 0.3s; /* For hover effects */
+}
+
+/* Hover effect to change brightness */
+.clock:hover {
+    filter: brightness(1.5); /* Makes the clock 50% brighter on hover */
+    transform: scale(1.05);  /* Slightly scales up the clock on hover */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .clock {
+        font-size: 1.5rem;
+        width: 80%; /* Adjust width on smaller screens */
+        left: 70%; /* Recenter */
+        top: 15%;  /* Reposition */
+        transform: translateX(-50%); /* Center the clock horizontally */
+    }
+}
+
+@media (max-width: 480px) {
+    .clock {
+      left: 74%; /* Recenter */
+        top: 24%;  /* Reposition */
+        font-size: 10px;
+        padding: 8px 20px; /* Reduce padding on very small screens */
+    }
+}  

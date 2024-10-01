@@ -12,14 +12,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $profile = '';
 
     // Handle file upload if a new file is provided
-    if (isset($_FILES['files']) && $_FILES['files']['error'][0] == UPLOAD_ERR_OK) {
+    if (isset($_FILES['files']) && $_FILES['files']['error'] == UPLOAD_ERR_OK) {
         $target_dir = "../uploads/";
         $pro = "uploads/";
-        $profile = $target_dir . basename($_FILES["files"]["name"][0]);
-        $profilee = $pro . basename($_FILES["files"]["name"][0]);
-        move_uploaded_file($_FILES["files"]["tmp_name"][0], $profile);
+        $profile = $target_dir . basename($_FILES["files"]["name"]);
+        $profilee = $pro . basename($_FILES["files"]["name"]);
+        move_uploaded_file($_FILES["files"]["tmp_name"], $profile);
     } else {
-        $profilee = ''; 
+         $stmt = $conn->prepare("SELECT profile FROM users WHERE id = :id");
+        $stmt->bindParam(':id', $userId);
+        $stmt->execute();
+        $existingProfile = $stmt->fetchColumn();
+
+        // If there was an existing profile, keep it
+        if ($existingProfile) {
+            $profilee = $existingProfile; // Keep existing profile
+        } else {
+            $profilee = null; // No existing profile
+        }
     }
 
     // Prepare the SQL statement for updating

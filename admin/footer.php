@@ -3,11 +3,11 @@
                 <div class="bg-secondary rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="https://www.fissionfox.com/">Copyright</a>, All Right Reserved. 
+                            &copy; <a href="https://www.fissionfox.com/"><span id="copyright"></span></a>, <span id="allrightreserved"></span> 
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://www.fissionfox.com/">Fission Fox</a>
+                           <span id="designedby"></span> <a href="https://www.fissionfox.com/" >Fission Fox</a>
                         </div>
                     </div>
                 </div>
@@ -34,6 +34,31 @@
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    
+    <script>
+            $(document).ready(function() {
+                var currentUrl = window.location.pathname.split("/").pop(); 
+            
+                $('.nav-item.nav-link').each(function() {
+                    var href = $(this).attr('href');
+            
+                    if (href === currentUrl || (currentUrl === '' && href === 'index.php')) {
+                        $('.nav-item.nav-link').removeClass('active'); 
+                        $(this).addClass('active');
+                    }
+                });
+            
+                // Loop through dropdown menu links
+                $('.dropdown-menu a').each(function() {
+                    var href = $(this).attr('href');
+            
+                    if (href === currentUrl) {
+                        $('.dropdown-item').removeClass('active'); 
+                        $(this).addClass('active');
+                    }
+                });
+            });
+    </script>
 
 
 

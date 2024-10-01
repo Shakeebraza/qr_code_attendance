@@ -1,10 +1,16 @@
 <?php
 include_once('header.php');
-$todayDate = date('Y-m-d');
+// $todayDate = date('Y-m-d');
 $data = json_decode($funObject->GetTodayAttendance(), true);
+if (!isset($_SESSION['type']) || $_SESSION['type'] != ADMIN_USER_ID) {
+    header('Location: ../login.php');
+    exit();
+}
 ?>
 <style>
-/* You can add any custom styling here */
+    
+     
+    
 </style>
 
 <div class="container-fluid pt-4 px-4">

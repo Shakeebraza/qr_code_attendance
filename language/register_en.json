@@ -1,0 +1,10 @@
+{
+    "title": "Registration Page",
+    "headerTitle": "Register",
+    "usernamePlaceholder": "Your Name at Work",
+    "numberPlaceholder": "Cell Phone Number",
+    "passwordPlaceholder": "Password",
+    "loginLink": "Already have an account? Login",
+    "registerButton": "Register",
+    "errorMessage": "Please enter at least 10 digits."
+}

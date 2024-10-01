@@ -16,20 +16,33 @@ try {
     if ($user && password_verify($password, $user['password'])) {
         // Check if the account is verified
         if ($user['verified'] == 0) {
-            echo "Your account is not verified. Please contact admin. <a href='../login.php'>Login Different Account</a>";
-            session_destroy();
+            // echo "Su cuenta no está verificada. Por favor contacte al administrador. <a href='../login.php'>Iniciar sesión en una cuenta diferente</a>";
+            // session_destroy();
+             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['actual_name'] = $user['actual_name'];
+            $_SESSION['work_name'] = $user['work_name'];
+            $_SESSION['type'] = $user['type'];
+            $_SESSION['verified'] = $user['verified'];
+            $_SESSION['profile'] = $user['profile'];
+            echo "<script>
+        window.location.href = '../userprofile.php';
+        </script>";
+        exit(); 
         } else {
             // Verified
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['actual_name'] = $user['actual_name'];
+            $_SESSION['work_name'] = $user['work_name'];
             $_SESSION['type'] = $user['type'];
             $_SESSION['verified'] = $user['verified'];
             $_SESSION['profile'] = $user['profile'];
-            header('Location: ../welcome.php');
+            header('Location: ../empmasterlist.php');
         }
     } else {
         echo "<script>
-        alert('Invalid email or password.');
+        alert('Número o contraseña no válidos.');
         window.location.href = '../login.php';
         </script>";
         exit(); 

@@ -17,18 +17,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                echo json_encode(['status' => 'success', 'message' => 'Room(s) assigned successfully']);
+                echo json_encode(['status' => 'success', 'message' => 'Habitaciones asignadas correctamente']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Failed to assign room(s)']);
+                echo json_encode(['status' => 'error', 'message' => 'No se pudo asignar la(s) habitación(es)']);
             }
         } catch (PDOException $e) {
             echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
         }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Invalid inputs']);
+        echo json_encode(['status' => 'error', 'message' => 'Entradas no válidas']);
     }
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+    echo json_encode(['status' => 'error', 'message' => 'Método de solicitud no válido']);
 }
 ?>
 

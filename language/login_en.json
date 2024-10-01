@@ -1,0 +1,9 @@
+{
+    "title": "Login Page",
+    "headerTitle": "Login",
+    "signup": "Signup",
+    "loginButton": "Login",
+    "loginErrorMessage": "Please enter at least 10 digits.",
+    "cellPhonePlaceholder": "Cell Phone Number",
+    "passwordPlaceholder": "Password"
+}

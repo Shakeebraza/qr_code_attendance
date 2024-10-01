@@ -180,6 +180,7 @@ table.dataTable thead > tr > td.sorting_desc_disabled {
                                 $studentName = htmlspecialchars($row["student_name"], ENT_QUOTES, 'UTF-8');
                                 $studentCourse = htmlspecialchars($row["student_name"], ENT_QUOTES, 'UTF-8');
                                 $qrCode = htmlspecialchars($row["generated_code"], ENT_QUOTES, 'UTF-8');
+                                $qrCodeurl = $row["generated_code_url"];
                         ?>
                             <tr>
                                 <th scope="row" id="studentID-<?= $studentID ?>"><?= $studentID ?></th>
@@ -204,11 +205,11 @@ table.dataTable thead > tr > td.sorting_desc_disabled {
                                                     </div>
                                                     <div class="modal-body text-center">
                                                         <!-- QR Code Image -->
-                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCode) ?>" alt="QR Code for <?= $studentName ?>" width="300">
+                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCodeurl) ?>" alt="QR Code for <?= $studentName ?>" width="300">
                                                     </div>
                                                     <div class="modal-footer">
                                                         <!-- Download QR Code Button -->
-                                                        <a href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCode) ?>" class="btn btn-secondary" download="qrcode.png">Download QR Code</a>
+                                                        <a href="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= urlencode($qrCodeurl) ?>" class="btn btn-secondary" download="qrcode.png">Download QR Code</a>
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
